@@ -27,6 +27,8 @@ export default class extends Phaser.Scene {
     const w = this.game.config.width as number
     const h = this.game.config.height as number
 
+    this.add.tileSprite(w / 2, h / 2, 1920, 1080, 'field');
+
     this.surface = this.add.renderTexture(0, 0, w, h);
     this.anims.create({
       key: "walk",
