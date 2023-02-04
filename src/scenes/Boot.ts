@@ -1,5 +1,4 @@
 import Phaser from 'phaser'
-import WebFont from 'webfontloader'
 import brushStandard from "../assets/brushStandard.png";
 import brushBig from "../assets/brushBig.png";
 import characterImg1 from "../assets/vehicle1.png";
@@ -10,10 +9,12 @@ import enhanceScopeImage from "../assets/images/perks/improvement-enhance-signal
 import enhanceSpeedImage from "../assets/images/perks/improvement-increase-speed.png";
 import disruptionNoSeedsImage from "../assets/images/perks/disruption-no-seeds.png";
 import disruptionFreeze from "../assets/images/perks/disruption-freeze.png";
-import tutorial from "../assets/images/apple.png";
+import fieldImage from "../assets/images/field.png";
+import tutorialImage from "../assets/images/gimp_intro.png";
 
 export default class extends Phaser.Scene {
     fontsReady: boolean;
+
 
     constructor() {
         super({
@@ -27,16 +28,16 @@ export default class extends Phaser.Scene {
     }
 
     preload() {
-        WebFont.load({
-            google: {
-                families: ['Baloo Da']
-            },
-            custom: {
-                families: ['severinaregular'],
-                urls: ['./src/assets/fonts/chlorinar/stylesheet.css', './src/assets/fonts/severina/stylesheet.css']
-            },
-            active: this.fontsLoaded
-        });
+        // WebFont.load({
+        //     google: {
+        //         families: ['Baloo Da']
+        //     },
+        //     custom: {
+        //         families: ['severinaregular'],
+        //         urls: ['./src/assets/fonts/chlorinar/stylesheet.css', './src/assets/fonts/severina/stylesheet.css']
+        //     },
+        //     active: this.fontsLoaded
+        // });
 
 
         var progressBar = this.add.graphics();
@@ -45,55 +46,42 @@ export default class extends Phaser.Scene {
         var width = this.cameras.main.width;
         var height = this.cameras.main.height;
 
-        progressBox.fillStyle(0x222222, 0.8);
-        progressBox.fillRect(width / 2 - 160, 370, 320, 50);
+        progressBox.fillStyle(0xffffff, 0.8);
+        progressBox.fillRect(width / 2 - 320, 370, 640, 50);
 
         var loadingText = this.make.text({
             x: width / 2,
-            y: height / 2 - 50,
+            y: height / 2 - 200,
             text: 'Loading...',
             style: {
-                font: '20px monospace',
+                font: '32px monospace',
             }
         });
         loadingText.setOrigin(0.5, 0.5);
 
         var percentText = this.make.text({
             x: width / 2,
-            y: height / 2 - 5,
+            y: height / 2 - 145,
             text: '0%',
             style: {
-                font: '18px monospace',
+                font: '24px monospace',
+                color: '#000000'
             }
         });
         percentText.setOrigin(0.5, 0.5);
 
-        var assetText = this.make.text({
-            x: width / 2,
-            y: height / 2 + 50,
-            text: '',
-            style: {
-                font: '18px monospace',
-            }
-        });
-        assetText.setOrigin(0.5, 0.5);
-
         this.load.on('progress', function (value) {
-            percentText.setText(value * 100 + '%');
+            percentText.setText((value * 100).toFixed(2) + '%');
             progressBar.clear();
             progressBar.fillStyle(0xffffff, 1);
-            progressBar.fillRect(width / 2 - 160, 380, 300 * value, 30);
+            progressBar.fillRect(width / 2 - 310, 380, 620 * value, 30);
         });
 
-        this.load.on('fileprogress', function (file) {
-            assetText.setText('Loading asset: ' + file.key);
-        });
-        this.load.on('complete', function () {
-            progressBar.destroy();
-            progressBox.destroy();
-            loadingText.destroy();
-            percentText.destroy();
-            assetText.destroy();
+        this.load.on('complete', () => {
+            loadingText.setText("Let's go!")
+            setTimeout(() => {
+                this.scene.start('Game');
+            }, 400)
         });
 
 
@@ -119,14 +107,17 @@ export default class extends Phaser.Scene {
         this.load.image('enhance-speed', enhanceSpeedImage);
         this.load.image('disruption-no-seeds', disruptionNoSeedsImage);
         this.load.image('disruption-freeze', disruptionFreeze);
-        this.load.image('tutorial', tutorial);
+        this.load.image('field', fieldImage);
+        this.load.image('tutorial', tutorialImage);
+
+        this.load.start();
     }
 
 
     update() {
-        if (this.fontsReady) {
-            this.scene.start('Game');
-        }
+        // if (this.fontsReady) {
+        //     this.scene.start('Game');
+        // }
     }
 
     fontsLoaded() {

@@ -23,7 +23,7 @@ const config = {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
-    backgroundColor: "#653c1a",
+    backgroundColor: "#000000",
     scene: [BootScene, MenuScene, GameScene, ScoresScene],
 };
 

@@ -42,7 +42,7 @@ function drawNewPerk() {
 }
 
 var perk = drawNewPerk();
-var gameStatus = 'waiting';
+var gameStatus = 'started';
 
 app.use(express.static(__dirname + '/public'));
 
@@ -65,6 +65,7 @@ const getTeam = () => {
 }
 
 const checkGameCanBeStarted = () => {
+    return true
     const p = Object.values(players);
     return gameStatus !== 'started' && p.filter((p) => !p.ready).length === 0 && p.length > 1;
 }
@@ -72,6 +73,13 @@ const checkGameCanBeStarted = () => {
 const changeGameStatus = (status) => {
     gameStatus = status
     io.emit('gameStatusChanged', status);
+
+    if (status === 'started') {
+        setTimeout(() => {
+            // drop first perk after some time
+            io.emit('perkDrop', perk);
+        }, Math.random() * 1000 + 2000)
+    }
 }
 
 const stopGame = () => {
@@ -81,6 +89,7 @@ const stopGame = () => {
 const tryToStartGame = () => {
     if (checkGameCanBeStarted()) {
         changeGameStatus('started')
+
         setTimeout(() => {
             stopGame();
         }, GAME_LENGTH)
@@ -108,8 +117,6 @@ io.on('connection', function (socket) {
             tryToStartGame();
         }, 2000)
     });
-    // send the star object to the new player
-    socket.emit('perkDrop', perk);
     // update all other players of the new player
     socket.broadcast.emit('newPlayer', players[socket.id]);
 
@@ -177,7 +184,7 @@ io.on('connection', function (socket) {
         // notify that big brush has been deactivated
         setTimeout(() => {
             io.emit('bigBrushDeactivated', players[socket.id].playerId);
-        }, 1000);
+        }, 3000);
     }
 
     function handleShoeCollection() {
