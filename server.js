@@ -11,9 +11,11 @@ var io = require('socket.io')(server, {
 
 const colors = [
     'orange',
-    'blue',
+    'white',
     'green',
-    'pink'
+    'pink',
+    'red',
+    'black',
 ]
 
 var GAME_WIDTH = 1920;

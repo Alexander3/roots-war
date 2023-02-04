@@ -29,7 +29,7 @@ export function addPlayer(self, playerInfo, kind) {
     const isCurrent = kind === 'current';
     const content = isCurrent ? self.physics : self.physics;
     const character = content.add
-        .sprite(playerInfo.x, playerInfo.y, "character2")
+        .sprite(playerInfo.x, playerInfo.y, "character1")
         .setOrigin(0.5, 0.5).setScale(0.5)
 
     // character.play({key: "walk", repeat: -1});
