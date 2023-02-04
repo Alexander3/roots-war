@@ -1,16 +1,28 @@
 import Phaser from 'phaser'
 import brushStandard from "../assets/brushStandard.png";
 import brushBig from "../assets/brushBig.png";
-import characterImg1 from "../assets/vehicle1.png";
-import characterImg2 from "../assets/vehicle2.png";
-import characterImg3 from "../assets/vehicle3.png";
-import characterImg4 from "../assets/vehicle4.png";
+import vehicleImg1 from "../assets/vehicle1.png";
+import vehicleImg2 from "../assets/vehicle2.png";
+import vehicleImg3 from "../assets/vehicle3.png";
+import vehicleImg4 from "../assets/vehicle4.png";
+import vehicleImg5 from "../assets/vehicle5.png";
+import vehicleImg6 from "../assets/vehicle6.png";
+
 import enhanceScopeImage from "../assets/images/perks/improvement-enhance-signal.png";
 import enhanceSpeedImage from "../assets/images/perks/improvement-increase-speed.png";
 import disruptionNoSeedsImage from "../assets/images/perks/disruption-no-seeds.png";
 import disruptionFreeze from "../assets/images/perks/disruption-freeze.png";
 import fieldImage from "../assets/images/field.png";
 import tutorialImage from "../assets/images/gimp_intro.png";
+
+const vehicles = [
+    vehicleImg1,
+    vehicleImg2,
+    vehicleImg3,
+    vehicleImg4,
+    vehicleImg5,
+    vehicleImg6,
+]
 
 export default class extends Phaser.Scene {
     fontsReady: boolean;
@@ -87,22 +99,13 @@ export default class extends Phaser.Scene {
 
         this.load.image("brushStandard", brushStandard);
         this.load.image("brushBig", brushBig);
-        this.load.spritesheet("character1", characterImg1, {
-            frameWidth: 178,
-            frameHeight: 141,
-        });
-        this.load.spritesheet("character2", characterImg2, {
-            frameWidth: 178,
-            frameHeight: 141,
-        });
-        this.load.spritesheet("character3", characterImg3, {
-            frameWidth: 178,
-            frameHeight: 141,
-        });
-        this.load.spritesheet("character4", characterImg4, {
-            frameWidth: 178,
-            frameHeight: 141,
-        });
+        for (let a = 0; a < vehicles.length; a++) {
+            this.load.spritesheet(`vehicle${a + 1}`, vehicles[a], {
+                frameWidth: 178,
+                frameHeight: 141,
+            });
+        }
+
         this.load.image('enhance-scope', enhanceScopeImage);
         this.load.image('enhance-speed', enhanceSpeedImage);
         this.load.image('disruption-no-seeds', disruptionNoSeedsImage);

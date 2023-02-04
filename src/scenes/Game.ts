@@ -1,7 +1,6 @@
-import { drawPlayerBrush } from "../brush";
-import { calculateScores } from "../domain";
-import { createForServer, GameStatus } from "../gameSocket";
-import { Player } from "../player";
+import {drawPlayerBrush} from "../brush";
+import {createForServer, GameStatus} from "../gameSocket";
+import {Player} from "../player";
 
 export default class extends Phaser.Scene {
   speed: number;
@@ -63,7 +62,7 @@ export default class extends Phaser.Scene {
     );
     // this.worker = new SharedWorker('domain.js');
   }
-  
+
   changeGameStatus(gameStatus) {
     this.gameStatus = gameStatus;
 
@@ -88,7 +87,7 @@ export default class extends Phaser.Scene {
         this.timeText.text = timeRemaining + ' seconds remaining';
 
       }
-      
+
       if (this.cursors.left.isDown) {
         this.mainPlayer.angle -= 4;
       } else if (this.cursors.right.isDown) {
@@ -106,7 +105,6 @@ export default class extends Phaser.Scene {
         );
 
         this.mainPlayer.setVelocity(velocity.x, velocity.y);
-
         drawPlayerBrush(this, this.mainPlayer);
 
         this.physics.world.wrap(this.mainPlayer, 32);
@@ -117,9 +115,9 @@ export default class extends Phaser.Scene {
         var r = this.mainPlayer.rotation;
         if (
           this.mainPlayer.oldPosition &&
-          (x !== this.mainPlayer.oldPosition.x ||
-            y !== this.mainPlayer.oldPosition.y ||
-            r !== this.mainPlayer.oldPosition.rotation) 
+            (x !== this.mainPlayer.oldPosition.x ||
+                y !== this.mainPlayer.oldPosition.y ||
+                r !== this.mainPlayer.oldPosition.rotation)
         ) {
           this.socket.emit("playerMovement", {
             x,

@@ -28,21 +28,23 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   spriteName: string;
 
   constructor(game: Game, playerInfo, kind: string) {
-    super(game, playerInfo.x, playerInfo.y, "character1");
+    const {teamColor, brushColor, vehicle: spriteName} = getPlayerColors(playerInfo);
+    super(game, playerInfo.x, playerInfo.y, spriteName);
 
     game.physics.add.existing(this, false);
+    game.add.existing(this)
 
     const isCurrent = kind === 'current';
 
-    this.setOrigin(0.5, 0.5).setDisplaySize(53, 40);
-    
+    this.setOrigin(0.5, 0.5).setDisplaySize(90, 70);
+
     // this.play({key: "walk", repeat: -1});
 
     this.setAngle(45);
-    
+
     const velocity = game.physics.velocityFromAngle(
-      this.angle,
-      game.speed
+        this.angle,
+        game.speed
     )
 
     if (isCurrent) {
@@ -51,8 +53,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     // this.setTint(playerInfo.teamColor);
-
-    const {teamColor, brushColor, character: spriteName} = getPlayerColors(playerInfo);
 
     this.color = colors.pop();
     this.orientation = 0;
@@ -102,31 +102,31 @@ const getPlayerColors = ({ team }) => {
   switch (team) {
     case "orange":
       return {
-        character: 'character1',
+        vehicle: 'vehicle1',
         teamColor: 0xff0000,
         brushColor: invertRB(0xeba534),
       };
     case "white":
       return {
-        character: 'character2',
+        vehicle: 'vehicle2',
         teamColor: 0xffffff,
         brushColor: invertRB(0xffffff),
       };
     case "green":
       return {
-        character: 'character3',
+        vehicle: 'vehicle3',
         teamColor: 0x00ff00,
         brushColor: invertRB(0x199147),
       };
     case "pink":
       return {
-        character: 'character4',
+        vehicle: 'vehicle4',
         teamColor: 0x6c12a3,
         brushColor: invertRB(0xdbb0ef),
       };
     case "red":
       return {
-        character: 'character5',
+        vehicle: 'vehicle5',
         teamColor: 0xff0000,
         brushColor: invertRB(0xff0000),
       };
@@ -134,6 +134,6 @@ const getPlayerColors = ({ team }) => {
   return {
     teamColor: 0x000000,
     brushColor: 0x00000,
-    character: 'character6'
+    vehicle: 'vehicle6'
   };
 };

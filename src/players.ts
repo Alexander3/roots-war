@@ -3,6 +3,7 @@ import Game from "./scenes/Game";
 
 export function addCurrentPlayer(self, playerInfo) {
     self.mainPlayer = addPlayer(self, playerInfo, 'current')
+
 }
 
 export function addOtherPlayer(self, playerInfo) {
@@ -26,6 +27,6 @@ export function addOtherPlayer(self, playerInfo) {
     );
 }
 
-export function addPlayer(self: Game, playerInfo, kind) {
+function addPlayer(self: Game, playerInfo, kind) {
     return new Player(self, playerInfo, kind);
 }
