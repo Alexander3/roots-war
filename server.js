@@ -15,10 +15,13 @@ const colors = [
     'pink'
 ]
 
+var GAME_WIDTH = 1920;
+var GAME_HEIGHT = 1080;
+
 var players = {};
 var star = {
-    x: Math.floor(Math.random() * 700) + 50,
-    y: Math.floor(Math.random() * 500) + 50
+    x: Math.floor(Math.random() * GAME_WIDTH),
+    y: Math.floor(Math.random() * GAME_HEIGHT)
 };
 var scores = {
     blue: 0,
@@ -51,8 +54,8 @@ io.on('connection', function (socket) {
     // create a new player and add it to our players object
     players[socket.id] = {
         rotation: 0,
-        x: Math.floor(Math.random() * 700) + 50,
-        y: Math.floor(Math.random() * 500) + 50,
+        x: Math.floor(Math.random() * GAME_WIDTH),
+        y: Math.floor(Math.random() * GAME_HEIGHT),
         playerId: socket.id,
         team
     };
@@ -88,8 +91,8 @@ io.on('connection', function (socket) {
         } else {
             scores.blue += 10;
         }
-        star.x = Math.floor(Math.random() * 700) + 50;
-        star.y = Math.floor(Math.random() * 500) + 50;
+        star.x = Math.floor(Math.random() * GAME_WIDTH);
+        star.y = Math.floor(Math.random() * GAME_HEIGHT);
         io.emit('starLocation', star);
         io.emit('scoreUpdate', scores);
     });
