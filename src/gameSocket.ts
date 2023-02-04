@@ -1,6 +1,7 @@
-import io from "socket.io-client";
+import * as io from "socket.io-client";
 import {addCurrentPlayer, addOtherPlayer} from "./players";
 import {drawPlayerBrush} from "./brush";
+import { Player } from "./player";
 
 export function createForServer(self) {
     self.socket = io.connect("http://localhost:8081");
@@ -10,7 +11,7 @@ export function createForServer(self) {
     }
 
     // ADDING EXISTING PLAYERS WHEN JOINING AS NEW PLAYER
-    self.socket.on("currentPlayers", function (players) {
+    self.socket.on("currentPlayers", function (players: Player[]) {
         Object.keys(players).forEach(function (id) {
             if (players[id].playerId === self.socket.id) {
                 addCurrentPlayer(self, players[id]);
@@ -72,7 +73,7 @@ export function createForServer(self) {
     self.socket.on("shoeActivated", function (playerId) {
         self.allPlayers().forEach((sprite) => {
             if (sprite.player.playerId === playerId) {
-                sprite.player.velocity *= 2;
+                sprite.player.speed *= 2;
             }
         })
     });
@@ -81,7 +82,7 @@ export function createForServer(self) {
     self.socket.on("shoeDeactivated", function (playerId) {
         self.allPlayers().forEach((sprite) => {
             if (sprite.player.playerId === playerId) {
-                sprite.player.velocity /= 2;
+                sprite.player.speed /= 2;
             }
         })
     });

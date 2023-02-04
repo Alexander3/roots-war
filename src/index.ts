@@ -26,8 +26,6 @@ const config = {
     backgroundColor: "#653c1a",
     scene: [BootScene, MenuScene, GameScene],
 };
-let lastCalc = 0;
-const players = [new Player()];
 
 class MyGame extends Phaser.Game {
     step(time, delta) {
@@ -35,4 +33,4 @@ class MyGame extends Phaser.Game {
     }
 }
 
-const game = new MyGame(config);
+new MyGame(config);
