@@ -12,8 +12,9 @@ export default class extends Phaser.Scene {
   gameStatus: GameStatus;
   spaceKey: Phaser.Input.Keyboard.Key;
   socket: any;
-  otherPlayers: Phaser.Physics.Arcade.Group;
+  promptText: Phaser.GameObjects.Text;
   perk: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
+  otherPlayers: Phaser.Physics.Arcade.Group;
   mainPlayer: Player;
   promptText: Phaser.GameObjects.Text;
 
@@ -40,32 +41,11 @@ export default class extends Phaser.Scene {
     this.standardBrush = this.add.image(100, 100, 'brushStandard').setVisible(false).setOrigin(0.5,0.5);
     this.bigBrush = this.add.image(100, 100, 'brushBig').setVisible(false).setOrigin(0.5,0.5);
 
-
     this.timeText = this.add.text(w/2, h-15, '', { font: '32px severinaregular' });
     this.timeText.setOrigin(0.5, 0.5);
 
-
-
-
-    this.anims.create({
-      key: "walk",
-      frames: this.anims.generateFrameNumbers("character", {}),
-      frameRate: 3,
-    });
-
     this.tutorial = this.add.sprite(w / 2, h / 2, "tutorial");
 
-    this.promptText = this.make
-      .text({
-        x: w / 2,
-        y: h - h / 10,
-        text: "Press spacebar if you are ready to play!",
-        style: {
-          font: "48px monospace",
-          color: "#ffffff",
-        },
-      })
-      .setOrigin(0.5, 0.5);
 
     // this.worker = new SharedWorker('domain.js');
   }
@@ -90,7 +70,6 @@ export default class extends Phaser.Scene {
         // if (Math.round(time / 2000) % 10 === 0) {
         //   calculateScores(this.surface, this.allPlayers())
         // }
-
         const velocity = this.physics.velocityFromAngle(
           this.mainPlayer.angle,
           this.mainPlayer.speed
