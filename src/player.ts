@@ -1,3 +1,5 @@
+import chroma from "chroma-js";
+
 const colormap = require("colormap");
 
 const colors = colormap({
@@ -19,7 +21,7 @@ export class Player {
   playerId: string;
   speed: number;
   points=0;
-  private singleColorBrush: HTMLCanvasElement;
+  private brushColorObj: any;
 
   constructor(playerInfo) {
     const { teamColor, brushColor } = getPlayerColors(playerInfo);
@@ -30,19 +32,10 @@ export class Player {
     this.isBrushEnabled = true;
     this.teamColor = teamColor;
     this.brushColor = brushColor;
+    this.brushColorObj = chroma(brushColor)
     this.playerId = playerInfo.playerId;
     this.speed = DEFAULT_SPEED;
     this.collisionPossible = true;
-
-    //TODO Should it be here?
-    const circle = document.createElement('canvas');
-    const ctx = circle.getContext('2d');
-    ctx.beginPath();
-    ctx.arc(16, 16, 16, 0, 2 * Math.PI);
-    ctx.fillStyle='#' + brushColor.toString(16)
-    ctx.fill()
-
-    this.singleColorBrush = circle
   }
   update() {}
 
@@ -76,6 +69,7 @@ export const invertRB = (colour) => {
 };
 
 const getPlayerColors = ({ team }) => {
+
   switch (team) {
     case "red":
       return {
