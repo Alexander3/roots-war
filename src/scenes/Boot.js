@@ -4,6 +4,7 @@ import brush from "../assets/brush.png";
 import brush2 from "../assets/brush2.png";
 import characterImg from "../assets/vehicle3.png";
 import logoStar from "../assets/star_gold.png";
+import shoeImage from "../assets/images/apple.png";
 
 export default class extends Phaser.Scene {
     constructor() {
@@ -98,6 +99,7 @@ export default class extends Phaser.Scene {
             frameHeight: 141,
         });
         this.load.image('star', logoStar);
+        this.load.image('shoe', shoeImage);
     }
 
 

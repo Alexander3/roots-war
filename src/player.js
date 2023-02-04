@@ -16,6 +16,7 @@ export class Player {
         this.teamColor = teamColor;
         this.brushColor = brushColor;
         this.playerId = playerInfo.playerId;
+        this.velocity = 300;
     }
     update() {
 

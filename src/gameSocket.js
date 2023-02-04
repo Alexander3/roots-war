@@ -68,6 +68,24 @@ export function createForServer(self) {
         })
     });
 
+    // RECEIVING INFO ABOUT SHOE ACTIVATION
+    self.socket.on("shoeActivated", function (playerId) {
+        self.allPlayers().forEach((sprite) => {
+            if (sprite.player.playerId === playerId) {
+                sprite.player.velocity *= 2;
+            }
+        })
+    });
+
+    // RECEIVING INFO ABOUT SHOE DEACTIVATION
+    self.socket.on("shoeDeactivated", function (playerId) {
+        self.allPlayers().forEach((sprite) => {
+            if (sprite.player.playerId === playerId) {
+                sprite.player.velocity /= 2;
+            }
+        })
+    });
+
     // CREATING INPUT CONTROLS FOR CURRENT PLAYER
     self.cursors = self.input.keyboard.createCursorKeys();
 
@@ -87,21 +105,21 @@ export function createForServer(self) {
     });
 
     // ADD PERK FOR ALL PLAYERS
-    self.socket.on("starLocation", function (starLocation) {
-        if (self.star) {
-            self.star.destroy();
+    self.socket.on("perkDrop", function ({x, y, type: perkType}) {
+        if (self.perk) {
+            self.perk.destroy();
         }
 
         // add perk image
-        self.star = self.physics.add.image(starLocation.x, starLocation.y, "star");
+        self.perk = self.physics.add.image(x, y, perkType);
 
-        // setup collection logic on collision between player sprinte and perk sprite
+
+        // setup collection logic on collision between player sprite and perk sprite
         self.physics.add.overlap(
             self.character,
-            self.star,
+            self.perk,
             function () {
-                // self.character.player.collectBigBrush();
-                self.socket.emit("starCollected");
+                self.socket.emit("perkCollected", perkType);
             },
             null,
             this

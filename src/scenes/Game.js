@@ -7,8 +7,6 @@ export default class extends Phaser.Scene {
         super({
             key: "Game",
         });
-
-        this.velocity = 300;
     }
 
     create() {
@@ -37,7 +35,7 @@ export default class extends Phaser.Scene {
             // calculate_scores(this.game.canvas)
             this.character.body.velocity = this.physics.velocityFromAngle(
                 this.character.angle,
-                this.velocity
+                this.character.player.velocity
             );
 
             drawPlayerBrush(this, this.character)

@@ -1,4 +1,5 @@
 var express = require('express');
+var _ = require('lodash');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server, {
@@ -19,14 +20,28 @@ var GAME_WIDTH = 1920;
 var GAME_HEIGHT = 1080;
 
 var players = {};
-var star = {
-    x: Math.floor(Math.random() * GAME_WIDTH),
-    y: Math.floor(Math.random() * GAME_HEIGHT)
-};
 var scores = {
     blue: 0,
     red: 0
 };
+
+var PERK_TYPE = {
+    STAR: 'star',
+    SHOE: 'shoe'
+}
+
+function drawNewPerk() {
+    const perkTypes = Object.values(PERK_TYPE);
+    const randomPerkType = _.sample(perkTypes);
+
+    return {
+        x: Math.floor(Math.random() * GAME_WIDTH),
+        y: Math.floor(Math.random() * GAME_HEIGHT),
+        type: randomPerkType
+    }
+}
+
+var perk = drawNewPerk();
 
 app.use(express.static(__dirname + '/public'));
 
@@ -62,7 +77,7 @@ io.on('connection', function (socket) {
     // send the players object to the new player
     socket.emit('currentPlayers', players);
     // send the star object to the new player
-    socket.emit('starLocation', star);
+    socket.emit('perkDrop', perk);
     // send the current scores
     socket.emit('scoreUpdate', scores);
     // update all other players of the new player
@@ -85,27 +100,50 @@ io.on('connection', function (socket) {
         socket.broadcast.emit('playerMoved', players[socket.id]);
     });
 
-    socket.on('starCollected', function () {
-        if (players[socket.id].team === 'red') {
-            scores.red += 10;
-        } else {
-            scores.blue += 10;
+    socket.on('perkCollected', function (perkType) {
+        // draw new random perk in random position
+        perk = drawNewPerk();
+
+        handlePerk(perkType);
+
+        // notify about new perk drop
+        io.emit('perkDrop', perk);
+
+        // update scores
+        io.emit('scoreUpdate', scores);
+    });
+
+
+    function handlePerk(perkType) {
+        switch (perkType) {
+            case PERK_TYPE.STAR:
+                handleStarCollection()
+                break;
+            case PERK_TYPE.SHOE:
+                handleShoeCollection();
+                break;
         }
+    }
 
-        star.x = Math.floor(Math.random() * GAME_WIDTH);
-        star.y = Math.floor(Math.random() * GAME_HEIGHT);
-
+    function handleStarCollection() {
         // notify that big brush has been activated
         io.emit('bigBrushActivated', players[socket.id].playerId);
 
         // notify that big brush has been deactivated
         setTimeout(() => {
             io.emit('bigBrushDeactivated', players[socket.id].playerId);
-        }, 1000)
+        }, 1000);
+    }
 
-        io.emit('starLocation', star);
-        io.emit('scoreUpdate', scores);
-    });
+    function handleShoeCollection() {
+        // notify that big brush has been activated
+        io.emit('shoeActivated', players[socket.id].playerId);
+
+        // notify that big brush has been deactivated
+        setTimeout(() => {
+            io.emit('shoeDeactivated', players[socket.id].playerId);
+        }, 2000);
+    }
 });
 
 server.listen(8081, function () {
