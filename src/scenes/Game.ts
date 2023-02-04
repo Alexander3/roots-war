@@ -1,6 +1,7 @@
-import { drawPlayerBrush } from "../brush";
-import { createForServer,GameStatus } from "../gameSocket";
-import { copy, calculateScores } from "../domain";
+import {drawPlayerBrush} from "../brush";
+import {createForServer, GameStatus} from "../gameSocket";
+import {calculateScores, copy} from "../domain";
+import {Player} from "../player";
 
 const SCALE = 0.1;
 
@@ -14,6 +15,8 @@ export default class extends Phaser.Scene {
   character: any;
   gameStatus: GameStatus
   socket: any;
+
+  allPlayers: () => Player[]
 
   constructor() {
     super({
