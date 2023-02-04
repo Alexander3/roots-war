@@ -57,9 +57,9 @@ export default class extends Phaser.Scene {
 
       if (this.character) {
         this.character.player.update();
-        if (Math.round(time / 2000) % 10 === 0) {
-          // calculateScores(this.surface, this.allPlayers())
-        }
+        // if (Math.round(time / 2000) % 10 === 0) {
+        //   calculateScores(this.surface, this.allPlayers())
+        // }
         this.character.body.velocity = this.physics.velocityFromAngle(
             this.character.angle,
             this.character.player.speed
