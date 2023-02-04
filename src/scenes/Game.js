@@ -58,6 +58,7 @@ export default class extends Phaser.Scene {
                     x,
                     y,
                     rotation: r,
+                    hasBigBrush: this.character.player.hasBigBrush
                 });
             }
             // save old position data

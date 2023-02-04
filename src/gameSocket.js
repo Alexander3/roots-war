@@ -41,6 +41,8 @@ export function createForServer(self) {
                 otherPlayer.setRotation(playerInfo.rotation);
                 // set player position
                 otherPlayer.setPosition(playerInfo.x, playerInfo.y);
+                // set big brush based on server state
+                otherPlayer.player.hasBigBrush = playerInfo.hasBigBrush;
                 // draw player brush
                 drawPlayerBrush(self, otherPlayer)
             }
