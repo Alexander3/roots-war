@@ -23,6 +23,7 @@ export default class extends Phaser.Scene {
   timeText: Phaser.GameObjects.Text;
   endTime: number;
   peacefulMusic: Phaser.Sound.BaseSound;
+  titleText: Phaser.GameObjects.Text;
 
   constructor() {
     super({
@@ -77,7 +78,7 @@ export default class extends Phaser.Scene {
       })
       .setOrigin(0.5, 0.5);
 
-    this.make
+    this.titleText = this.make
       .text({
         x: w / 2,
         y: h / 5,
@@ -100,6 +101,7 @@ export default class extends Phaser.Scene {
     if (gameStatus === GameStatus.Start) {
       this.tutorial.destroy();
       this.promptText.destroy();
+      this.titleText.destroy();
       this.endTime = Date.now() + 60000;
       this.mainPlayer.startGame(this);
       this.allPlayers().forEach((player) => {
