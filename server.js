@@ -10,7 +10,7 @@ var io = require('socket.io')(server, {
 });
 
 const colors = [
-    'red',
+    'orange',
     'blue',
     'green',
     'pink'
@@ -20,10 +20,6 @@ var GAME_WIDTH = 1920;
 var GAME_HEIGHT = 1080;
 
 var players = {};
-var scores = {
-    blue: 0,
-    red: 0
-};
 
 var PERK_TYPE = {
     ENHANCE_SCOPE: 'enhance-scope',

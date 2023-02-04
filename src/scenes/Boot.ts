@@ -2,10 +2,10 @@ import Phaser from 'phaser'
 import WebFont from 'webfontloader'
 import brushStandard from "../assets/brushStandard.png";
 import brushBig from "../assets/brushBig.png";
-import characterImg1 from "../assets/vehicle4.png";
-import characterImg2 from "../assets/vehicle5.png";
-import characterImg3 from "../assets/vehicle5.png";
-import characterImg4 from "../assets/vehicle5.png";
+import characterImg1 from "../assets/vehicle1.png";
+import characterImg2 from "../assets/vehicle2.png";
+import characterImg3 from "../assets/vehicle3.png";
+import characterImg4 from "../assets/vehicle4.png";
 import enhanceScopeImage from "../assets/images/perks/improvement-enhance-signal.png";
 import enhanceSpeedImage from "../assets/images/perks/improvement-increase-speed.png";
 import disruptionNoSeedsImage from "../assets/images/perks/disruption-no-seeds.png";

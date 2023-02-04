@@ -71,15 +71,15 @@ export const invertRB = (colour) => {
 const getPlayerColors = ({ team }) => {
 
   switch (team) {
-    case "red":
+    case "orange":
       return {
         teamColor: 0xff0000,
         brushColor: invertRB(0xeba534),
       };
-    case "blue":
+    case "white":
       return {
-        teamColor: 0x0000ff,
-        brushColor: invertRB(0xdbeb34),
+        teamColor: 0xffffff,
+        brushColor: invertRB(0xffffff),
       };
     case "green":
       return {
@@ -90,6 +90,11 @@ const getPlayerColors = ({ team }) => {
       return {
         teamColor: 0x6c12a3,
         brushColor: invertRB(0xdbb0ef),
+      };
+    case "red":
+      return {
+        teamColor: 0xff0000,
+        brushColor: invertRB(0xff0000),
       };
   }
   return {
