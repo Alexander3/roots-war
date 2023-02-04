@@ -13,6 +13,7 @@ export class Player {
   orientation: number;
   hasBigBrush: boolean;
   isBrushEnabled: boolean;
+  collisionPossible: boolean;
   teamColor: number;
   brushColor: number;
   playerId: string;
@@ -31,6 +32,7 @@ export class Player {
     this.brushColor = brushColor;
     this.playerId = playerInfo.playerId;
     this.speed = DEFAULT_SPEED;
+    this.collisionPossible = true;
 
     //TODO Should it be here?
     const circle = document.createElement('canvas');
@@ -54,6 +56,14 @@ export class Player {
 
   enablePaint() {
     this.isBrushEnabled = true;
+  }
+
+  disableCollision() {
+    this.collisionPossible = false;
+  }
+
+  enableCollision() {
+    this.collisionPossible = true;
   }
 }
 
