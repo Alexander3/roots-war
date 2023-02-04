@@ -56,6 +56,7 @@ export const invertRB = (colour) => {
 };
 
 const getPlayerColors = ({ team }) => {
+  team='red'
   switch (team) {
     case "red":
       return {
