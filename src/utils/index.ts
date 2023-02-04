@@ -1,5 +1,3 @@
-import Phaser from 'phaser';
-
 export const centerGameObjects = (objects) => {
     objects.forEach(function (object) {
         object.setOrigin(0.5, 0.5)
