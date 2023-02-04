@@ -123,6 +123,26 @@ export function createForServer(self) {
         })
     });
 
+    // RECEIVING INFO ABOUT NO PAINT ACTIVATION
+    self.socket.on("noPaintActivated", function (playerId) {
+        self.allPlayers().forEach((sprite) => {
+            if (sprite.player.playerId !== playerId) {
+                console.log("DISABLE paint for", playerId)
+                sprite.player.disablePaint();
+            }
+        })
+    });
+
+    // RECEIVING INFO ABOUT NO PAINT DEACTIVATION
+    self.socket.on("noPaintDeactivated", function (playerId) {
+        self.allPlayers().forEach((sprite) => {
+            if (sprite.player.playerId !== playerId) {
+                console.log("ENABLE paint for", playerId)
+                sprite.player.enablePaint();
+            }
+        })
+    });
+
     // CREATING INPUT CONTROLS FOR CURRENT PLAYER
     self.cursors = self.input.keyboard.createCursorKeys();
 

@@ -28,7 +28,8 @@ var scores = {
 var PERK_TYPE = {
     STAR: 'star',
     SHOE: 'shoe',
-    CLOCK: 'clock'
+    CLOCK: 'clock',
+    NO_PAINT: 'no-paint'
 }
 
 const GAME_LENGTH = 30000
@@ -163,6 +164,9 @@ io.on('connection', function (socket) {
             case PERK_TYPE.CLOCK:
                 handleClockCollection();
                 break;
+            case PERK_TYPE.NO_PAINT:
+                handleNoPaintCollection();
+                break;
         }
     }
 
@@ -194,6 +198,16 @@ io.on('connection', function (socket) {
         setTimeout(() => {
             io.emit('clockDeactivated', players[socket.id].playerId);
         }, 1500);
+    }
+
+    function handleNoPaintCollection() {
+        // notify that big brush has been activated
+        io.emit('noPaintActivated', players[socket.id].playerId);
+
+        // notify that big brush has been deactivated
+        setTimeout(() => {
+            io.emit('noPaintDeactivated', players[socket.id].playerId);
+        }, 1200);
     }
 });
 

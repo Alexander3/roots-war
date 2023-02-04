@@ -3,9 +3,10 @@ import WebFont from 'webfontloader'
 import brushStandard from "../assets/brushStandard.png";
 import brushBig from "../assets/brushBig.png";
 import characterImg from "../assets/vehicle3.png";
-import logoStar from "../assets/star_gold.png";
+import logoStar from "../assets/images/star-gold.png";
 import shoeImage from "../assets/images/apple.png";
 import clockImage from "../assets/images/clock.png";
+import noPaintImage from "../assets/images/no-paint.png";
 import tutorial from "../assets/images/apple.png";
 
 export default class extends Phaser.Scene {
@@ -102,8 +103,8 @@ export default class extends Phaser.Scene {
         this.load.image('star', logoStar);
         this.load.image('shoe', shoeImage);
         this.load.image('clock', clockImage);
+        this.load.image('no-paint', noPaintImage);
         this.load.image('tutorial', tutorial);
-
     }
 
 

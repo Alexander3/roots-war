@@ -42,12 +42,6 @@ export default class extends Phaser.Scene {
 
     this.tutorial = this.add.sprite(0, 0, 'tutorial');
     this.cursors = this.input.keyboard.createCursorKeys();
-
-    // Hidden surface just to count score
-    // this.add.image(0, 0, "hiddenSurface").setOrigin(0);
-    //View minimap for debug
-    // this.add.image(0, 0, "canvastextureSmall").setOrigin(0);
-    // this.worker = new SharedWorker('domain.js');
   }
 
   update(time) {

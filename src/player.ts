@@ -12,6 +12,7 @@ export class Player {
   color: any;
   orientation: number;
   hasBigBrush: boolean;
+  isBrushEnabled: boolean;
   teamColor: number;
   brushColor: number;
   playerId: string;
@@ -25,6 +26,7 @@ export class Player {
     this.color = colors.pop();
     this.orientation = 0;
     this.hasBigBrush = false;
+    this.isBrushEnabled = true;
     this.teamColor = teamColor;
     this.brushColor = brushColor;
     this.playerId = playerInfo.playerId;
@@ -44,6 +46,14 @@ export class Player {
 
   resetSpeed() {
     this.speed = DEFAULT_SPEED;
+  }
+
+  disablePaint() {
+    this.isBrushEnabled = false;
+  }
+
+  enablePaint() {
+    this.isBrushEnabled = true;
   }
 }
 
