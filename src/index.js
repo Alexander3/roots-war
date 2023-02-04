@@ -1,5 +1,7 @@
 import Phaser from "phaser";
 import logoImg from "./assets/logo.png";
+import { calculate_scores } from "../domain";
+import { HEIGHT, WIDTH } from "../constants";
 
 class MyScene extends Phaser.Scene {
   constructor() {
@@ -27,15 +29,20 @@ class MyScene extends Phaser.Scene {
 const config = {
   type: Phaser.AUTO,
   parent: "phaser-example",
-  width: 800,
-  height: 600,
+  width: WIDTH,
+  height: HEIGHT,
   scene: MyScene,
 };
+let lastCalc = 0;
 
 class MyGame extends Phaser.Game {
   step(time, delta) {
     super.step(time, delta);
-    console.log("dupa");
+
+    if (time > 2000 && Math.round(time / 1000) > lastCalc) {
+      calculate_scores(this.canvas);
+      lastCalc += 1;
+    }
   }
 }
 
