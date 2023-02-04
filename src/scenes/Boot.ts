@@ -1,11 +1,13 @@
 import Phaser from 'phaser'
 import WebFont from 'webfontloader'
-import brush from "../assets/brush.png";
-import brush2 from "../assets/brush2.png";
+import brushStandard from "../assets/brushStandard.png";
+import brushBig from "../assets/brushBig.png";
 import characterImg from "../assets/vehicle3.png";
 import logoStar from "../assets/star_gold.png";
 
 export default class extends Phaser.Scene {
+    fontsReady: boolean;
+
     constructor() {
         super({
             key: "Boot"
@@ -45,7 +47,6 @@ export default class extends Phaser.Scene {
             text: 'Loading...',
             style: {
                 font: '20px monospace',
-                fill: '#ffffff'
             }
         });
         loadingText.setOrigin(0.5, 0.5);
@@ -56,7 +57,6 @@ export default class extends Phaser.Scene {
             text: '0%',
             style: {
                 font: '18px monospace',
-                fill: '#ffffff'
             }
         });
         percentText.setOrigin(0.5, 0.5);
@@ -67,13 +67,12 @@ export default class extends Phaser.Scene {
             text: '',
             style: {
                 font: '18px monospace',
-                fill: '#ffffff'
             }
         });
         assetText.setOrigin(0.5, 0.5);
 
         this.load.on('progress', function (value) {
-            percentText.setText(parseInt(value * 100) + '%');
+            percentText.setText(value * 100 + '%');
             progressBar.clear();
             progressBar.fillStyle(0xffffff, 1);
             progressBar.fillRect(width / 2 - 160, 380, 300 * value, 30);
@@ -91,8 +90,8 @@ export default class extends Phaser.Scene {
         });
 
 
-        this.load.image("brush", brush);
-        this.load.image("brush2", brush2);
+        this.load.image("brushStandard", brushStandard);
+        this.load.image("brushBig", brushBig);
         this.load.spritesheet("character", characterImg, {
             frameWidth: 178,
             frameHeight: 141,

@@ -1,5 +1,5 @@
 export function drawPlayerBrush(self, player) {
-    const brushImageKey = player.player.hasBigBrush ? "brush2" : "brush";
+    const brushImageKey = player.player.hasBigBrush ? "brushBig" : "brushStandard";
     const brushTexture = self.game.textures.get(brushImageKey);
     const brushImage = brushTexture.getSourceImage();
 
