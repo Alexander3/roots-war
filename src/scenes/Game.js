@@ -1,9 +1,9 @@
-import io from "socket.io-client";
 import brush from "../assets/brush.png";
+import brush2 from "../assets/brush2.png";
 import characterImg from "../assets/character-rotated.png";
 import logoStar from "../assets/star_gold.png";
-import {addCurrentPlayer, addOtherPlayer} from "../players";
 import {drawPlayerBrush} from "../brush";
+import {createForServer} from "../gameSocket";
 
 export default class extends Phaser.Scene {
     constructor() {
@@ -11,11 +11,12 @@ export default class extends Phaser.Scene {
             key: "Game",
         });
 
-        this.velocity = 100;
+        this.velocity = 300;
     }
 
     preload() {
         this.load.image("brush", brush);
+        this.load.image("brush2", brush2);
         this.load.spritesheet("character", characterImg, {
             frameWidth: 36,
             frameHeight: 32,
@@ -28,6 +29,10 @@ export default class extends Phaser.Scene {
         createForServer(this);
 
         this.surface = this.add.renderTexture(0, 0, this.game.config.width, this.game.config.height);
+        const bigBrush = this.add.image(64, 64, 'brush2');
+        bigBrush.setOrigin(0.5, 0.5)
+        // bigBrush.scale = 2; // Resize the image
+        this.bigBrush = bigBrush;
 
         this.anims.create({
             key: "walk",
@@ -40,12 +45,13 @@ export default class extends Phaser.Scene {
 
     update() {
         if (this.cursors.left.isDown) {
-            this.character.angle -= 1;
+            this.character.angle -= 4;
         } else if (this.cursors.right.isDown) {
-            this.character.angle += 1;
+            this.character.angle += 4;
         }
 
         if (this.character) {
+            this.character.player.update();
             this.character.body.velocity = this.physics.velocityFromAngle(
                 this.character.angle,
                 this.velocity
@@ -78,67 +84,4 @@ export default class extends Phaser.Scene {
             };
         }
     }
-}
-
-
-function createForServer(self) {
-    self.socket = io.connect("http://localhost:8081");
-    self.otherPlayers = self.physics.add.group();
-    self.socket.on("currentPlayers", function (players) {
-        Object.keys(players).forEach(function (id) {
-            if (players[id].playerId === self.socket.id) {
-                addCurrentPlayer(self, players[id]);
-            } else {
-                addOtherPlayer(self, players[id]);
-            }
-        });
-    });
-    self.socket.on("newPlayer", function (playerInfo) {
-        addOtherPlayer(self, playerInfo);
-    });
-    self.socket.on("disconnect", function (playerId) {
-        self.otherPlayers.getChildren().forEach(function (otherPlayer) {
-            if (playerId === otherPlayer.playerId) {
-                otherPlayer.destroy();
-            }
-        });
-    });
-    self.socket.on("playerMoved", function (playerInfo) {
-        self.otherPlayers.getChildren().forEach(function (otherPlayer) {
-            if (playerInfo.playerId === otherPlayer.playerId) {
-                otherPlayer.setRotation(playerInfo.rotation);
-                otherPlayer.setPosition(playerInfo.x, playerInfo.y);
-                drawPlayerBrush(self, otherPlayer)
-            }
-        });
-    });
-    self.cursors = self.input.keyboard.createCursorKeys();
-
-    self.blueScoreText = self.add.text(16, 16, "", {
-        fontSize: "32px",
-        fill: "#0000FF",
-    });
-    self.redScoreText = self.add.text(584, 16, "", {
-        fontSize: "32px",
-        fill: "#FF0000",
-    });
-
-    self.socket.on("scoreUpdate", function (scores) {
-        self.blueScoreText.setText("Blue: " + scores.blue);
-        self.redScoreText.setText("Red: " + scores.red);
-    });
-
-    self.socket.on("starLocation", function (starLocation) {
-        if (self.star) self.star.destroy();
-        self.star = self.physics.add.image(starLocation.x, starLocation.y, "star");
-        self.physics.add.overlap(
-            self.character,
-            self.star,
-            function () {
-                self.socket.emit("starCollected");
-            },
-            null,
-            this
-        );
-    });
 }

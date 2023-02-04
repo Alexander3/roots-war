@@ -1,3 +1,5 @@
+import {Player} from "./player";
+
 export function addCurrentPlayer(self, playerInfo) {
     self.character = addPlayer(self, playerInfo, 'current')
 }
@@ -18,7 +20,6 @@ export function addPlayer(self, playerInfo, kind) {
 
     character.play({key: "walk", repeat: -1});
 
-    const {teamColor, brushColor} = getPlayerDetails(playerInfo.team)
     character.setAngle(45);
     if (isCurrent) {
         character.body.velocity = self.physics.velocityFromAngle(
@@ -26,32 +27,8 @@ export function addPlayer(self, playerInfo, kind) {
             self.velocity
         );
     }
-    character.teamColor = teamColor
-    character.brushColor = brushColor
-    character.setTint(teamColor);
+    const player = new Player(playerInfo)
+    character.player = player
+    character.setTint(player.teamColor);
     return character;
-}
-
-const getPlayerDetails = (team) => {
-    switch (team) {
-        case 'red':
-            return {
-                teamColor: 0xff0000,
-                brushColor: 0x0000ff,
-            }
-        case 'blue':
-            return {
-                teamColor: 0x0000ff,
-                brushColor: 0xff0000,
-            }
-        case 'green':
-            return {
-                teamColor: 0x00ff00,
-                brushColor: 0x00ff00,
-            }
-    }
-    return {
-        teamColor: 0x000000,
-        brushColor: 0x00000,
-    }
 }
