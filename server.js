@@ -26,10 +26,10 @@ var scores = {
 };
 
 var PERK_TYPE = {
-    STAR: 'star',
-    SHOE: 'shoe',
-    CLOCK: 'clock',
-    NO_PAINT: 'no-paint'
+    ENHANCE_SCOPE: 'enhance-scope',
+    ENHANCE_SPEED: 'enhance-speed',
+    DISRUPTION_FREEZE: 'disruption-freeze',
+    DISRUPTION_NO_SEED: 'disruption-no-seeds'
 }
 
 const GAME_LENGTH = 30000
@@ -114,8 +114,6 @@ io.on('connection', function (socket) {
     });
     // send the star object to the new player
     socket.emit('perkDrop', perk);
-    // send the current scores
-    socket.emit('scoreUpdate', scores);
     // update all other players of the new player
     socket.broadcast.emit('newPlayer', players[socket.id]);
 
@@ -140,31 +138,29 @@ io.on('connection', function (socket) {
     });
 
     socket.on('perkCollected', function (perkType) {
+        // handle perk action
+        handlePerk(perkType);
+
         // draw new random perk in random position
         perk = drawNewPerk();
 
-        handlePerk(perkType);
-
         // notify about new perk drop
         io.emit('perkDrop', perk);
-
-        // update scores
-        io.emit('scoreUpdate', scores);
     });
 
 
     function handlePerk(perkType) {
         switch (perkType) {
-            case PERK_TYPE.STAR:
+            case PERK_TYPE.ENHANCE_SCOPE:
                 handleStarCollection()
                 break;
-            case PERK_TYPE.SHOE:
+            case PERK_TYPE.ENHANCE_SPEED:
                 handleShoeCollection();
                 break;
-            case PERK_TYPE.CLOCK:
+            case PERK_TYPE.DISRUPTION_FREEZE:
                 handleClockCollection();
                 break;
-            case PERK_TYPE.NO_PAINT:
+            case PERK_TYPE.DISRUPTION_NO_SEED:
                 handleNoPaintCollection();
                 break;
         }

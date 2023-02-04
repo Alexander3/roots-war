@@ -3,10 +3,10 @@ import WebFont from 'webfontloader'
 import brushStandard from "../assets/brushStandard.png";
 import brushBig from "../assets/brushBig.png";
 import characterImg from "../assets/vehicle3.png";
-import logoStar from "../assets/images/star-gold.png";
-import shoeImage from "../assets/images/apple.png";
-import clockImage from "../assets/images/clock.png";
-import noPaintImage from "../assets/images/no-paint.png";
+import enhanceScopeImage from "../assets/images/perks/improvement-enhance-signal.png";
+import enhanceSpeedImage from "../assets/images/perks/improvement-increase-speed.png";
+import disruptionNoSeedsImage from "../assets/images/perks/disruption-no-seeds.png";
+import disruptionFreeze from "../assets/images/perks/disruption-freeze.png";
 import tutorial from "../assets/images/apple.png";
 
 export default class extends Phaser.Scene {
@@ -100,10 +100,10 @@ export default class extends Phaser.Scene {
             frameWidth: 178,
             frameHeight: 141,
         });
-        this.load.image('star', logoStar);
-        this.load.image('shoe', shoeImage);
-        this.load.image('clock', clockImage);
-        this.load.image('no-paint', noPaintImage);
+        this.load.image('enhance-scope', enhanceScopeImage);
+        this.load.image('enhance-speed', enhanceSpeedImage);
+        this.load.image('disruption-no-seeds', disruptionNoSeedsImage);
+        this.load.image('disruption-freeze', disruptionFreeze);
         this.load.image('tutorial', tutorial);
     }
 

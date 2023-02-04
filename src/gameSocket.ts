@@ -146,21 +146,6 @@ export function createForServer(self) {
     // CREATING INPUT CONTROLS FOR CURRENT PLAYER
     self.cursors = self.input.keyboard.createCursorKeys();
 
-    self.blueScoreText = self.add.text(16, 16, "", {
-        fontSize: "32px",
-        fill: "#0000FF",
-    });
-    self.redScoreText = self.add.text(584, 16, "", {
-        fontSize: "32px",
-        fill: "#FF0000",
-    });
-
-    // UPDATE STATISTICS FOR ALL PLAYERS
-    self.socket.on("scoreUpdate", function (scores) {
-        self.blueScoreText.setText("Blue: " + scores.blue);
-        self.redScoreText.setText("Red: " + scores.red);
-    });
-
     // ADD PERK FOR ALL PLAYERS
     self.socket.on("perkDrop", function ({x, y, type: perkType}) {
         if (self.perk) {
