@@ -16,12 +16,12 @@ export default class extends Phaser.Scene {
   perk: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
   otherPlayers: Phaser.Physics.Arcade.Group;
   mainPlayer: Player;
-  promptText: Phaser.GameObjects.Text;
 
   allPlayers: () => Player[];
   standardBrush: Phaser.GameObjects.Image;
   bigBrush: Phaser.GameObjects.Image;
   timeText: Phaser.GameObjects.Text;
+  endTime: number;
 
   constructor() {
     super({
@@ -46,8 +46,32 @@ export default class extends Phaser.Scene {
 
     this.tutorial = this.add.sprite(w / 2, h / 2, "tutorial");
 
+    this.promptText = this.make
+      .text({
+        x: w / 2,
+        y: h - h / 10,
+        text: "Press spacebar if you are ready to play!",
+        style: {
+          font: "48px monospace",
+          color: "#ffffff",
+        },
+      })
+      .setOrigin(0.5, 0.5);
 
+    this.spaceKey = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.SPACE
+    );
     // this.worker = new SharedWorker('domain.js');
+  }
+  
+  changeGameStatus(gameStatus) {
+    this.gameStatus = gameStatus;
+
+    if (gameStatus === GameStatus.Start) {
+      this.tutorial.destroy();
+      this.promptText.destroy();
+      this.endTime = Date.now() + 60000;
+    }
   }
 
   update(time) {
@@ -59,6 +83,12 @@ export default class extends Phaser.Scene {
     } else if (this.gameStatus === GameStatus.Finished) {
       this.scene.start("Scores");
     } else {
+      if(this.endTime){
+         const timeRemaining = Math.ceil((this.endTime - Date.now()) / 1000);
+        this.timeText.text = timeRemaining + ' seconds remaining';
+
+      }
+      
       if (this.cursors.left.isDown) {
         this.mainPlayer.angle -= 4;
       } else if (this.cursors.right.isDown) {
