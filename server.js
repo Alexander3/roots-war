@@ -30,6 +30,8 @@ var PERK_TYPE = {
     SHOE: 'shoe'
 }
 
+const GAME_LENGTH = 5000
+
 function drawNewPerk() {
     const perkTypes = Object.values(PERK_TYPE);
     const randomPerkType = _.sample(perkTypes);
@@ -42,6 +44,7 @@ function drawNewPerk() {
 }
 
 var perk = drawNewPerk();
+var gameStatus = 'waiting';
 
 app.use(express.static(__dirname + '/public'));
 
@@ -63,6 +66,29 @@ const getTeam = () => {
     return team;
 }
 
+const checkGameCanBeStarted = () => {
+    const p = Object.values(players);
+    return gameStatus !== 'started' && p.filter((p) => !p.ready).length === 0 && p.length > 1;
+}
+
+const changeGameStatus = (status) => {
+    gameStatus = status
+    io.emit('gameStatusChanged', status);
+}
+
+const stopGame = () => {
+    changeGameStatus('finished')
+}
+
+const tryToStartGame = () => {
+    if (checkGameCanBeStarted()) {
+        changeGameStatus('started')
+        setTimeout(() => {
+            stopGame();
+        }, GAME_LENGTH)
+    }
+}
+
 io.on('connection', function (socket) {
     const team = getTeam();
     console.log('a user connected: ', socket.id, team);
@@ -76,6 +102,14 @@ io.on('connection', function (socket) {
     };
     // send the players object to the new player
     socket.emit('currentPlayers', players);
+
+    // when a player moves, update the player data
+    socket.on('playerReady', function () {
+        players[socket.id].ready = true;
+        setTimeout(() => {
+            tryToStartGame();
+        }, 2000)
+    });
     // send the star object to the new player
     socket.emit('perkDrop', perk);
     // send the current scores
@@ -89,6 +123,9 @@ io.on('connection', function (socket) {
         delete players[socket.id];
         // emit a message to all players to remove this player
         socket.disconnect(socket.id);
+        if (Object.values(players).length <= 1) {
+            stopGame();
+        }
     });
 
     // when a player moves, update the player data

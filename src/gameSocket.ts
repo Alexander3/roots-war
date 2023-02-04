@@ -1,7 +1,17 @@
 import * as io from "socket.io-client";
 import {addCurrentPlayer, addOtherPlayer} from "./players";
 import {drawPlayerBrush} from "./brush";
-import { Player } from "./player";
+import {Player} from "./player";
+
+export enum GameStatus {
+    Waiting = 'waiting',
+    Start = 'started',
+    Finished = 'finished'
+}
+
+export function disconnectWithServer(self) {
+    self.socket.disconnect();
+}
 
 export function createForServer(self) {
     self.socket = io.connect("http://localhost:8081");
@@ -58,6 +68,14 @@ export function createForServer(self) {
                 sprite.player.hasBigBrush = true;
             }
         })
+    });
+
+    // RECEIVING INFO WHEN GAME CAN BE STARTED
+    self.socket.on("gameStatusChanged", function (gameStatus) {
+        self.gameStatus = gameStatus
+        if (self.gameStatus === GameStatus.Finished) {
+            disconnectWithServer(self);
+        }
     });
 
     // RECEIVING INFO ABOUT BIG BRUSH DEACTIVATION

@@ -3,8 +3,8 @@ import Phaser from "phaser";
 import BootScene from "./scenes/Boot";
 import MenuScene from "./scenes/Menu";
 import GameScene from "./scenes/Game";
+import ScoresScene from "./scenes/Scores";
 import {HEIGHT, WIDTH} from "./constants";
-import {Player} from "./player";
 
 const config = {
     type: Phaser.AUTO,
@@ -24,7 +24,7 @@ const config = {
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
     backgroundColor: "#653c1a",
-    scene: [BootScene, MenuScene, GameScene],
+    scene: [BootScene, MenuScene, GameScene, ScoresScene],
 };
 
 class MyGame extends Phaser.Game {
