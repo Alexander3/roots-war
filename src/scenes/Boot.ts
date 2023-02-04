@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import WebFont from 'webfontloader'
 import brushStandard from "../assets/brushStandard.png";
 import brushStandardSheet from "../assets/brushStandardSheet2.png";
 import brushBig from "../assets/brushBig.png";
@@ -15,6 +16,7 @@ import disruptionNoSeedsImage from "../assets/images/perks/disruption-no-seeds.p
 import disruptionFreeze from "../assets/images/perks/disruption-freeze.png";
 import fieldImage from "../assets/images/field.png";
 import tutorialImage from "../assets/images/gimp_intro.png";
+import peacefulMusic from "../assets/sounds/peacful-music.mp3";
 
 const vehicles = [
     vehicleImg1,
@@ -41,16 +43,16 @@ export default class extends Phaser.Scene {
     }
 
     preload() {
-        // WebFont.load({
-        //     google: {
-        //         families: ['Baloo Da']
-        //     },
-        //     custom: {
-        //         families: ['severinaregular'],
-        //         urls: ['./src/assets/fonts/chlorinar/stylesheet.css', './src/assets/fonts/severina/stylesheet.css']
-        //     },
-        //     active: this.fontsLoaded
-        // });
+        WebFont.load({
+            google: {
+                families: ['Baloo Da']
+            },
+            custom: {
+                families: ['severinaregular'],
+                urls: ['./src/assets/fonts/chlorinar/stylesheet.css', './src/assets/fonts/severina/stylesheet.css']
+            },
+            active: this.fontsLoaded
+        });
 
 
         var progressBar = this.add.graphics();
@@ -114,6 +116,8 @@ export default class extends Phaser.Scene {
         this.load.image('disruption-freeze', disruptionFreeze);
         this.load.image('field', fieldImage);
         this.load.image('tutorial', tutorialImage);
+
+        this.load.audio('peaceful-music', peacefulMusic);
 
         this.load.start();
     }
