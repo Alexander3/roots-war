@@ -2,14 +2,10 @@ export function drawPlayerBrush(self, player) {
     if (!player.player.isBrushEnabled) {
         return;
     }
-
-    const brushImageKey = player.player.hasBigBrush ? "brushBig" : "brushStandard";
-    const brushTexture = self.game.textures.get(brushImageKey);
-    const brushImage = brushTexture.getSourceImage();
-
-    self.trail.setRotation(player.rotation)
+    const brushImage= player.player.hasBigBrush ? self.bigBrush : self.standardBrush;
+    brushImage.setRotation(player.rotation)
     self.surface.draw(
-        self.trail,
+        brushImage,
         player.x,
         player.y,
         1,

@@ -14,7 +14,8 @@ export default class extends Phaser.Scene {
   socket: any;
 
   allPlayers: () => Player[]
-  private trail: Phaser.GameObjects.Image;
+  private standardBrush: Phaser.GameObjects.Image;
+  private bigBrush: Phaser.GameObjects.Image;
 
   constructor() {
     super({
@@ -31,8 +32,8 @@ export default class extends Phaser.Scene {
     const tilingSprite = this.add.tileSprite(0, 0, w*2, h*2, 'dirt')
     tilingSprite.setTileScale(0.5, 0.5);
     this.surface = this.add.renderTexture(0, 0, w, h);
-    this.trail = this.add.image(100, 100, 'brushStandard').setVisible(false);
-    this.trail.setOrigin(0.5,0.5)
+    this.standardBrush = this.add.image(100, 100, 'brushStandard').setVisible(false).setOrigin(0.5,0.5);
+    this.bigBrush = this.add.image(100, 100, 'brushBig').setVisible(false).setOrigin(0.5,0.5);
 
 
 
