@@ -20,11 +20,11 @@ export function calculateScores(surface, players) {
 
             const color = chroma(r, g, b, 'rgb');
             for (const player of players) {
-                if (chroma.deltaE(color, player.player.brushColorObj) < DELTA_E_EPS)
-                    player.player.points += 1
+                if (chroma.deltaE(color, player.brushColorObj) < DELTA_E_EPS)
+                    player.points += 1
             }
         }
-        console.log(players.map(p => p.player.points))
+        console.log(players.map(p => p.points))
     })
 
 }

@@ -1,4 +1,6 @@
 import chroma from "chroma-js";
+import Phaser from "phaser";
+import Game from "./scenes/Game";
 
 const colormap = require("colormap");
 
@@ -10,7 +12,7 @@ const colors = colormap({
 });
 const DEFAULT_SPEED = 300;
 
-export class Player {
+export class Player extends Phaser.Physics.Arcade.Sprite {
   color: any;
   orientation: number;
   hasBigBrush: boolean;
@@ -20,10 +22,35 @@ export class Player {
   brushColor: number;
   playerId: string;
   speed: number;
-  points=0;
-  private brushColorObj: any;
+  points = 0;
+  brushColorObj: any;
+  oldPosition: { x: number; y: number; rotation: number };
 
-  constructor(playerInfo) {
+  constructor(game: Game, playerInfo, kind: string) {
+    super(game, playerInfo.x, playerInfo.y, "character1");
+
+    game.physics.add.existing(this, false);
+
+    const isCurrent = kind === 'current';
+
+    this.setOrigin(0.5, 0.5).setDisplaySize(53, 40);
+    
+    // this.play({key: "walk", repeat: -1});
+
+    this.setAngle(45);
+    
+    const velocity = game.physics.velocityFromAngle(
+      this.angle,
+      game.speed
+    )
+    
+    if (isCurrent) {
+
+      this.setVelocity(velocity.x, velocity.y);
+    }
+
+    // this.setTint(playerInfo.teamColor);
+
     const { teamColor, brushColor } = getPlayerColors(playerInfo);
 
     this.color = colors.pop();
@@ -32,11 +59,12 @@ export class Player {
     this.isBrushEnabled = true;
     this.teamColor = teamColor;
     this.brushColor = brushColor;
-    this.brushColorObj = chroma(brushColor)
+    this.brushColorObj = chroma(brushColor);
     this.playerId = playerInfo.playerId;
     this.speed = DEFAULT_SPEED;
     this.collisionPossible = true;
   }
+
   update() {}
 
   resetSpeed() {
@@ -69,7 +97,6 @@ export const invertRB = (colour) => {
 };
 
 const getPlayerColors = ({ team }) => {
-
   switch (team) {
     case "red":
       return {

@@ -1,11 +1,11 @@
 {
-    "compilerOptions": {
-      "lib": ["es2020","dom"],
-      "outDir": "./dist/",
-      "module": "es6",
-      "target": "es5",
-      "allowJs": true,
-      "moduleResolution": "node",
-      "allowSyntheticDefaultImports": true
-    }
+  "compilerOptions": {
+    "lib": ["es2020", "dom"],
+    "outDir": "./dist/",
+    "module": "es6",
+    "target": "es5",
+    "allowJs": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true
   }
+}

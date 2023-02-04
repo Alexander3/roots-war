@@ -1,7 +1,8 @@
 import {Player} from "./player";
+import Game from "./scenes/Game";
 
 export function addCurrentPlayer(self, playerInfo) {
-    self.character = addPlayer(self, playerInfo, 'current')
+    self.mainPlayer = addPlayer(self, playerInfo, 'current')
 }
 
 export function addOtherPlayer(self, playerInfo) {
@@ -10,12 +11,12 @@ export function addOtherPlayer(self, playerInfo) {
     self.otherPlayers.add(otherPlayer);
 
     self.physics.add.overlap(
-        self.character,
+        self.mainPlayer,
         otherPlayer,
         function () {
-            if (self.character.player.collisionPossible && otherPlayer.player.collisionPossible) {
+            if (self.mainPlayer.collisionPossible && otherPlayer.collisionPossible) {
                 self.socket.emit("playersCollision", {
-                    player1: self.character.player.playerId,
+                    player1: self.mainPlayer.playerId,
                     player2: otherPlayer.playerId
                 });
             }
@@ -25,24 +26,6 @@ export function addOtherPlayer(self, playerInfo) {
     );
 }
 
-export function addPlayer(self, playerInfo, kind) {
-    const isCurrent = kind === 'current';
-    const content = isCurrent ? self.physics : self.physics;
-    const character = content.add
-        .sprite(playerInfo.x, playerInfo.y, "character2")
-        .setOrigin(0.5, 0.5).setScale(0.5)
-
-    // character.play({key: "walk", repeat: -1});
-
-    character.setAngle(45);
-    if (isCurrent) {
-        character.body.velocity = self.physics.velocityFromAngle(
-            character.angle,
-            self.velocity
-        );
-    }
-    const player = new Player(playerInfo)
-    character.player = player
-    // character.setTint(player.teamColor);
-    return character;
+export function addPlayer(self: Game, playerInfo, kind) {
+    return new Player(self, playerInfo, kind);
 }

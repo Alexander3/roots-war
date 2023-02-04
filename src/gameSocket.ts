@@ -2,6 +2,7 @@ import * as io from "socket.io-client";
 import {addCurrentPlayer, addOtherPlayer} from "./players";
 import {drawPlayerBrush} from "./brush";
 import {Player} from "./player";
+import Game from "./scenes/Game";
 
 export enum GameStatus {
     Waiting = 'waiting',
@@ -13,11 +14,11 @@ export function disconnectWithServer(self) {
     self.socket.disconnect();
 }
 
-export function createForServer(self) {
+export function createForServer(self: Game) {
     self.socket = io.connect(`http://${location.hostname}:8081`);
     self.otherPlayers = self.physics.add.group();
     self.allPlayers = () => {
-        return [self.character, ...self.otherPlayers.getChildren()];
+        return [self.mainPlayer as Player, ...self.otherPlayers.getChildren() as Player[]];
     }
 
     // ADDING EXISTING PLAYERS WHEN JOINING AS NEW PLAYER
@@ -43,17 +44,16 @@ export function createForServer(self) {
 
     // REMOVING PLAYER THAT DISCONNECTED
     self.socket.on("disconnect", function (playerId) {
-        self.otherPlayers.getChildren().forEach(function (otherPlayer) {
+        self.otherPlayers.getChildren().forEach(function (otherPlayer: Player) {
             if (playerId === otherPlayer.playerId) {
                 otherPlayer.destroy();
             }
         });
     });
 
-
     // RECEIVING INFO ABOUT MOVEMENT OF OTHER PLAYERS
     self.socket.on("playerMoved", function (playerInfo) {
-        self.otherPlayers.getChildren().forEach(function (otherPlayer) {
+        self.otherPlayers.getChildren().forEach(function (otherPlayer: Player) {
             if (playerInfo.playerId === otherPlayer.playerId) {
                 // set player rotation
                 otherPlayer.setRotation(playerInfo.rotation);
@@ -67,9 +67,9 @@ export function createForServer(self) {
 
     // RECEIVING INFO ABOUT BIG BRUSH ACTIVATION
     self.socket.on("bigBrushActivated", function (playerId) {
-        self.allPlayers().forEach((sprite) => {
-            if (sprite.player.playerId === playerId) {
-                sprite.player.hasBigBrush = true;
+        self.allPlayers().forEach((player) => {
+            if (player.playerId === playerId) {
+                player.hasBigBrush = true;
             }
         })
     });
@@ -84,86 +84,86 @@ export function createForServer(self) {
 
     // RECEIVING INFO ABOUT BIG BRUSH DEACTIVATION
     self.socket.on("bigBrushDeactivated", function (playerId) {
-        self.allPlayers().forEach((sprite) => {
-            if (sprite.player.playerId === playerId) {
-                sprite.player.hasBigBrush = false;
+        self.allPlayers().forEach((player) => {
+            if (player.playerId === playerId) {
+                player.hasBigBrush = false;
             }
         })
     });
 
     // RECEIVING INFO ABOUT SHOE ACTIVATION
     self.socket.on("shoeActivated", function (playerId) {
-        self.allPlayers().forEach((sprite) => {
-            if (sprite.player.playerId === playerId) {
-                sprite.player.speed *= 2;
+        self.allPlayers().forEach((player) => {
+            if (player.playerId === playerId) {
+                player.speed *= 2;
             }
         })
     });
 
     // RECEIVING INFO ABOUT SHOE DEACTIVATION
     self.socket.on("shoeDeactivated", function (playerId) {
-        self.allPlayers().forEach((sprite) => {
-            if (sprite.player.playerId === playerId) {
-                sprite.player.speed /= 2;
+        self.allPlayers().forEach((player) => {
+            if (player.playerId === playerId) {
+                player.speed /= 2;
             }
         })
     });
 
     // RECEIVING INFO ABOUT CLOCK ACTIVATION
     self.socket.on("clockActivated", function (playerId) {
-        self.allPlayers().forEach((sprite) => {
-            if (sprite.player.playerId !== playerId) {
-                sprite.player.speed = 0;
+        self.allPlayers().forEach((player) => {
+            if (player.playerId !== playerId) {
+                player.speed = 0;
             }
         })
     });
 
     // RECEIVING INFO ABOUT CLOCK DEACTIVATION
     self.socket.on("clockDeactivated", function (playerId) {
-        self.allPlayers().forEach((sprite) => {
-            if (sprite.player.playerId !== playerId) {
-                sprite.player.resetSpeed()
+        self.allPlayers().forEach((player) => {
+            if (player.playerId !== playerId) {
+                player.resetSpeed()
             }
         })
     });
 
     // RECEIVING INFO ABOUT NO PAINT ACTIVATION
     self.socket.on("noPaintActivated", function (playerId) {
-        self.allPlayers().forEach((sprite) => {
-            if (sprite.player.playerId !== playerId) {
-                sprite.player.disablePaint();
+        self.allPlayers().forEach((player) => {
+            if (player.playerId !== playerId) {
+                player.disablePaint();
             }
         })
     });
 
     // RECEIVING INFO ABOUT NO PAINT DEACTIVATION
     self.socket.on("noPaintDeactivated", function (playerId) {
-        self.allPlayers().forEach((sprite) => {
-            if (sprite.player.playerId !== playerId) {
-                sprite.player.enablePaint();
+        self.allPlayers().forEach((player) => {
+            if (player.playerId !== playerId) {
+                player.enablePaint();
             }
         })
     });
 
     // RECEIVING INFO ABOUT COLLISION BETWEEN TWO PLAYERS
     self.socket.on("playerCollided", function ({player1, player2}) {
-        self.allPlayers().forEach((sprite) => {
-            if (sprite.player.playerId === player1 || sprite.player.playerId === player2) {
-                sprite.angle += 120;
-                sprite.alpha = 0.5;
-                sprite.player.speed /= 2;
-                sprite.player.disableCollision()
+        self.allPlayers().forEach((player) => {
+            if (player.playerId === player1 || player.playerId === player2) {
+                player.angle += 120;
+                player.alpha = 0.5;
+                player.speed /= 2;
+                player.disableCollision()
             }
         })
     });
 
     // RECEIVING INFO ABOUT COLLISION BETWEEN TWO PLAYERS
     self.socket.on("playerCanCollideAgain", function ({player1, player2}) {
-        self.allPlayers().forEach((sprite) => {
-            if (sprite.player.playerId === player1 || sprite.player.playerId === player2) {
-                sprite.alpha = 1;
-                sprite.player.resetSpeed()
-                sprite.player.enableCollision()
+        self.allPlayers().forEach((player) => {
+            if (player.playerId === player1 || player.playerId === player2) {
+                player.alpha = 1;
+                player.resetSpeed()
+                player.enableCollision()
             }
         })
     });
@@ -183,7 +183,7 @@ export function createForServer(self) {
 
         // setup collection logic on collision between player sprite and perk sprite
         self.physics.add.overlap(
-            self.character,
+            self.mainPlayer,
             self.perk,
             function () {
                 self.socket.emit("perkCollected", perkType);
