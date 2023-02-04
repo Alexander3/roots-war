@@ -14,7 +14,7 @@ export function disconnectWithServer(self) {
 }
 
 export function createForServer(self) {
-    self.socket = io.connect("http://localhost:8081");
+    self.socket = io.connect(`http://${location.hostname}:8081`);
     self.otherPlayers = self.physics.add.group();
     self.allPlayers = () => {
         return [self.character, ...self.otherPlayers.getChildren()];
