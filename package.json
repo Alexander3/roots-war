@@ -33,6 +33,7 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
+    "colormap": "^2.3.2",
     "phaser": "^3.55.2",
     "prettier": "^2.8.3",
     "webfontloader": "^1.6.28"
