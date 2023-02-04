@@ -2,6 +2,7 @@ import { drawPlayerBrush } from "../brush";
 import { calculateScores } from "../domain";
 import { createForServer, GameStatus } from "../gameSocket";
 import { Player } from "../player";
+import { TEXT_STYLES } from "../constants";
 
 export default class extends Phaser.Scene {
   speed: number;
@@ -41,23 +42,29 @@ export default class extends Phaser.Scene {
     this.surface = this.add.renderTexture(0, 0, w, h);
 
     // this.standardBrush = this.add.image(100, 100, 'brushStandard').setVisible(false).setOrigin(0.5,0.5);
-    this.bigBrush = this.add.image(100, 100, 'brushBig').setVisible(false).setOrigin(0.5,0.5);
+    this.bigBrush = this.add
+      .image(100, 100, "brushBig")
+      .setVisible(false)
+      .setOrigin(0.5, 0.5);
 
     const config = {
-          key: "move",
-          frames: this.anims.generateFrameNumbers("brushStandardSheet", {
-            start: 0,
-            end: 4,
-            first: 0
-          }),
-          frameRate: 5,
-          repeat: -1
-        };
+      key: "move",
+      frames: this.anims.generateFrameNumbers("brushStandardSheet", {
+        start: 0,
+        end: 4,
+        first: 0,
+      }),
+      frameRate: 5,
+      repeat: -1,
+    };
 
-        this.anims.create(config);
-      this.standardBrush = this.add.sprite(100, 100, 'brushStandardSheet').setVisible(false).setOrigin(0.5,0.5).play("move");;
-
-    this.timeText = this.add.text(w/2, h-15, '', { font: '32px severinaregular' });
+    this.anims.create(config);
+    this.standardBrush = this.add
+      .sprite(100, 100, "brushStandardSheet")
+      .setVisible(false)
+      .setOrigin(0.5, 0.5)
+      .play("move");
+    this.timeText = this.add.text(w / 2, h - 30, "", TEXT_STYLES.textStyle);
     this.timeText.setOrigin(0.5, 0.5);
 
     this.tutorial = this.add.sprite(w / 2, h / 2, "tutorial");
@@ -67,10 +74,7 @@ export default class extends Phaser.Scene {
         x: w / 2,
         y: h - h / 10,
         text: "Press spacebar if you are ready to play!",
-        style: {
-          font: "48px monospace",
-          color: "#ffffff",
-        },
+        style: TEXT_STYLES.bigTextStyle,
       })
       .setOrigin(0.5, 0.5);
 
@@ -78,7 +82,7 @@ export default class extends Phaser.Scene {
       Phaser.Input.Keyboard.KeyCodes.SPACE
     );
 
-    this.peacefulMusic = this.sound.add('peaceful-music');
+    this.peacefulMusic = this.sound.add("peaceful-music");
     this.peacefulMusic.play();
     // this.worker = new SharedWorker('domain.js');
   }
@@ -102,10 +106,9 @@ export default class extends Phaser.Scene {
     } else if (this.gameStatus === GameStatus.Finished) {
       this.scene.start("Scores");
     } else {
-      if(this.endTime){
-         const timeRemaining = Math.ceil((this.endTime - Date.now()) / 1000);
-        this.timeText.text = timeRemaining + ' seconds remaining';
-
+      if (this.endTime) {
+        const timeRemaining = Math.ceil((this.endTime - Date.now()) / 1000);
+        this.timeText.text = timeRemaining + " seconds remaining";
       }
 
       if (this.cursors.left.isDown) {

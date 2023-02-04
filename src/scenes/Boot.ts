@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import WebFont from 'webfontloader'
 import brushStandard from "../assets/brushStandard.png";
 import brushStandardSheet from "../assets/brushStandardSheet2.png";
 import brushBig from "../assets/brushBig.png";
@@ -42,16 +43,16 @@ export default class extends Phaser.Scene {
     }
 
     preload() {
-        // WebFont.load({
-        //     google: {
-        //         families: ['Baloo Da']
-        //     },
-        //     custom: {
-        //         families: ['severinaregular'],
-        //         urls: ['./src/assets/fonts/chlorinar/stylesheet.css', './src/assets/fonts/severina/stylesheet.css']
-        //     },
-        //     active: this.fontsLoaded
-        // });
+        WebFont.load({
+            google: {
+                families: ['Baloo Da']
+            },
+            custom: {
+                families: ['severinaregular'],
+                urls: ['./src/assets/fonts/chlorinar/stylesheet.css', './src/assets/fonts/severina/stylesheet.css']
+            },
+            active: this.fontsLoaded
+        });
 
 
         var progressBar = this.add.graphics();
