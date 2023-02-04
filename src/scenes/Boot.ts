@@ -11,7 +11,7 @@ import enhanceSpeedImage from "../assets/images/perks/improvement-increase-speed
 import disruptionNoSeedsImage from "../assets/images/perks/disruption-no-seeds.png";
 import disruptionFreeze from "../assets/images/perks/disruption-freeze.png";
 import fieldImage from "../assets/images/field.jpg";
-import tutorial from "../assets/images/apple.png";
+import tutorialImage from "../assets/images/gimp_intro.png";
 
 export default class extends Phaser.Scene {
     fontsReady: boolean;
@@ -108,7 +108,7 @@ export default class extends Phaser.Scene {
         this.load.image('disruption-no-seeds', disruptionNoSeedsImage);
         this.load.image('disruption-freeze', disruptionFreeze);
         this.load.image('field', fieldImage);
-        this.load.image('tutorial', tutorial);
+        this.load.image('tutorial', tutorialImage);
 
         this.load.start();
     }
