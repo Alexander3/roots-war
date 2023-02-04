@@ -1,42 +1,24 @@
 import Phaser from "phaser";
-import logoImg from "./assets/logo.png";
-
-class MyScene extends Phaser.Scene {
-  constructor() {
-    super();
-  }
-
-  preload() {
-    this.load.image("logo", logoImg);
-  }
-
-  create() {
-    const logo = this.add.image(400, 150, "logo");
-
-    this.tweens.add({
-      targets: logo,
-      y: 450,
-      duration: 2000,
-      ease: "Power2",
-      yoyo: true,
-      loop: -1,
-    });
-  }
-}
+import BootScene from "./scenes/Boot";
+import MenuScene from "./scenes/Menu";
 
 const config = {
-  type: Phaser.AUTO,
-  parent: "phaser-example",
-  width: 800,
-  height: 600,
-  scene: MyScene,
+    type: Phaser.AUTO,
+    parent: "phaser-example",
+    width: 1920,
+    height: 1080,
+    mode: Phaser.Scale.FIT,
+    backgroundColor: '#4488aa',
+    scene: [
+        BootScene,
+        MenuScene
+    ],
 };
 
 class MyGame extends Phaser.Game {
-  step(time, delta) {
-    super.step(time, delta);
-    console.log("dupa");
-  }
+    step(time, delta) {
+        super.step(time, delta);
+    }
 }
 
 const game = new MyGame(config);
