@@ -1,52 +1,30 @@
-import {SCALE} from "./constants";
+import chroma from "chroma-js";
 
-export function calculateScores(self,hiddenTexture, players) {
+var canvas = document.createElement('canvas');
 
-    var src = hiddenTexture.texture.getSourceImage();
-    var canvasTexture = self.textures.createCanvas('map', src.width, src.height).draw(0, 0, src);
+const DELTA_E_EPS = 50
 
+export function calculateScores(surface, players) {
+    surface.snapshot((snap) => {
+        const ctx = canvas.getContext('2d', {willReadFrequently: true});
+        ctx.canvas.width = surface.width;
+        ctx.canvas.height = surface.height;
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(snap, 0, 0);
+        const pixels = ctx.getImageData(0, 0, surface.width, surface.height).data;
+        for (let x = 0; x < pixels.length; x += 4) {
+            const r = pixels[x]
+            const g = pixels[x + 1]
+            const b = pixels[x + 2]
 
-    // hiddenTexture.update()
-    // hiddenTexture.snapshotArea(0, 0, hiddenTexture.width, hiddenTexture.height, (snap) => {
-    //
-    //     var canvas = document.createElement('canvas');
-    //     var context = canvas.getContext('2d');
-    //     context.drawImage(snap, 0, 0);
-    //     const pixels = context.getImageData(0, 0, 1920, 1080).data;
-        const scores = {};
-    //     for (let x = 0; x < pixels.length; x++) {
-    //         const color = pixels[x]
-    //         if (!scores[color]) scores[color] = 0;
-    //         scores[color] += 1;
-    //     }
-    //     console.log(scores, players.map(p => p.player.points))
-    //
-    // })
+            const color = chroma(r, g, b, 'rgb');
+            for (const player of players) {
+                if (chroma.deltaE(color, player.player.brushColorObj) < DELTA_E_EPS)
+                    player.player.points += 1
+            }
+        }
+        console.log(players.map(p => p.player.points))
+    })
 
-
-const pixels = canvasTexture.getPixels();
-//     const pixels = canvasTexture.context.getImageData(0, 0, 1920, 1080).data
-//
-    const playerMap = Object.fromEntries(players.map(p => ([p.player.brushColor, p])))
-//     const scores = {};
-//     for (let x = 0; x < pixels.length; x++) {
-//         const color = pixels[x]
-//         if (!scores[color]) scores[color] = 0;
-//         scores[color] += 1;
-//     }
-//
-
-for (let x = 0, c = pixels.length; x < c; x++) {
-    const row = pixels[x];
-    for (let y = 0, r = row.length; y < r; y++) {
-        // const color = row[y].color
-        const color = row[y]
-        const player = playerMap[color]
-        if (player) player.player.points++;
-
-        if (!scores[color]) scores[color] = 0;
-        scores[color] += 1;
-    }
-}
-    console.log(scores, players.map(p => p.player.points))
 }

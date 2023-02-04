@@ -1,7 +1,6 @@
 import Phaser from 'phaser'
 import WebFont from 'webfontloader'
 import brushStandard from "../assets/brushStandard.png";
-import brushStandardMask from "../assets/brushStandardMask.png";
 import brushBig from "../assets/brushBig.png";
 import characterImg from "../assets/vehicle3.png";
 import logoStar from "../assets/star_gold.png";
@@ -94,7 +93,6 @@ export default class extends Phaser.Scene {
 
 
         this.load.image("brushStandard", brushStandard);
-        this.load.image("brushStandardMask", brushStandardMask);
         this.load.image("brushBig", brushBig);
         this.load.spritesheet("character", characterImg, {
             frameWidth: 178,

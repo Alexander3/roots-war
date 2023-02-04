@@ -24,8 +24,6 @@ export default class extends Phaser.Scene {
     const h = this.game.config.height as number
 
     this.surface = this.add.renderTexture(0, 0, w, h);
-    this.hiddenSurface = this.add.renderTexture(0, 0, w, h);
-
     this.anims.create({
       key: "walk",
       frames: this.anims.generateFrameNumbers("character", {}),
@@ -49,7 +47,7 @@ export default class extends Phaser.Scene {
     if (this.character) {
       this.character.player.update();
       if (Math.round(time / 2000) %2 ===0) {
-        calculateScores(this, this.hiddenSurface, this.allPlayers())
+        calculateScores(this.surface, this.allPlayers())
       }
       this.character.body.velocity = this.physics.velocityFromAngle(
         this.character.angle,
