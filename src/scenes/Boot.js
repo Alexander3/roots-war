@@ -97,7 +97,7 @@ export default class extends Phaser.Scene {
 
     update() {
         if (this.fontsReady) {
-            this.scene.start('Load');
+            this.scene.start('Menu');
         }
     }
 

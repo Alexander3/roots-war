@@ -7,7 +7,10 @@ const config = {
     parent: "phaser-example",
     width: 1920,
     height: 1080,
-    mode: Phaser.Scale.FIT,
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+    },
     backgroundColor: '#4488aa',
     scene: [
         BootScene,
