@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import brushStandard from "../assets/brushStandard.png";
+import brushStandardSheet from "../assets/brushStandardSheet2.png";
 import brushBig from "../assets/brushBig.png";
 import characterImg1 from "../assets/vehicle1.png";
 import characterImg2 from "../assets/vehicle2.png";
@@ -86,6 +87,7 @@ export default class extends Phaser.Scene {
 
 
         this.load.image("brushStandard", brushStandard);
+        this.load.spritesheet("brushStandardSheet", brushStandardSheet,{frameHeight:32, frameWidth:32});
         this.load.image("brushBig", brushBig);
         this.load.spritesheet("character1", characterImg1, {
             frameWidth: 178,

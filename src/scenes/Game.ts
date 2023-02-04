@@ -38,8 +38,23 @@ export default class extends Phaser.Scene {
     this.add.tileSprite(w / 2, h / 2, 1920, 1080, "field");
 
     this.surface = this.add.renderTexture(0, 0, w, h);
-    this.standardBrush = this.add.image(100, 100, 'brushStandard').setVisible(false).setOrigin(0.5,0.5);
+
+    // this.standardBrush = this.add.image(100, 100, 'brushStandard').setVisible(false).setOrigin(0.5,0.5);
     this.bigBrush = this.add.image(100, 100, 'brushBig').setVisible(false).setOrigin(0.5,0.5);
+
+    const config = {
+          key: "move",
+          frames: this.anims.generateFrameNumbers("brushStandardSheet", {
+            start: 0,
+            end: 4,
+            first: 0
+          }),
+          frameRate: 5,
+          repeat: -1
+        };
+
+        this.anims.create(config);
+      this.standardBrush = this.add.sprite(100, 100, 'brushStandardSheet').setVisible(false).setOrigin(0.5,0.5).play("move");;
 
     this.timeText = this.add.text(w/2, h-15, '', { font: '32px severinaregular' });
     this.timeText.setOrigin(0.5, 0.5);
@@ -63,7 +78,7 @@ export default class extends Phaser.Scene {
     );
     // this.worker = new SharedWorker('domain.js');
   }
-  
+
   changeGameStatus(gameStatus) {
     this.gameStatus = gameStatus;
 
@@ -88,7 +103,7 @@ export default class extends Phaser.Scene {
         this.timeText.text = timeRemaining + ' seconds remaining';
 
       }
-      
+
       if (this.cursors.left.isDown) {
         this.mainPlayer.angle -= 4;
       } else if (this.cursors.right.isDown) {
@@ -119,7 +134,7 @@ export default class extends Phaser.Scene {
           this.mainPlayer.oldPosition &&
           (x !== this.mainPlayer.oldPosition.x ||
             y !== this.mainPlayer.oldPosition.y ||
-            r !== this.mainPlayer.oldPosition.rotation) 
+            r !== this.mainPlayer.oldPosition.rotation)
         ) {
           this.socket.emit("playerMovement", {
             x,
