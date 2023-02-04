@@ -5,6 +5,7 @@ import brushBig from "../assets/brushBig.png";
 import characterImg from "../assets/vehicle3.png";
 import logoStar from "../assets/star_gold.png";
 import shoeImage from "../assets/images/apple.png";
+import clockImage from "../assets/images/clock.png";
 
 export default class extends Phaser.Scene {
     fontsReady: boolean;
@@ -99,6 +100,8 @@ export default class extends Phaser.Scene {
         });
         this.load.image('star', logoStar);
         this.load.image('shoe', shoeImage);
+        this.load.image('clock', clockImage);
+
     }
 
 

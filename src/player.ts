@@ -6,6 +6,7 @@ const colors = colormap({
   format: "hex",
   alpha: 1,
 });
+const DEFAULT_SPEED = 300;
 
 export class Player {
   color: any;
@@ -25,9 +26,13 @@ export class Player {
     this.teamColor = teamColor;
     this.brushColor = brushColor;
     this.playerId = playerInfo.playerId;
-    this.speed = 300;
+    this.speed = DEFAULT_SPEED;
   }
   update() {}
+
+  resetSpeed() {
+    this.speed = DEFAULT_SPEED;
+  }
 }
 
 export const invertRB = (colour) => {
