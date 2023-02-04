@@ -31,7 +31,7 @@ var PERK_TYPE = {
     CLOCK: 'clock'
 }
 
-const GAME_LENGTH = 15000
+const GAME_LENGTH = 30000
 
 function drawNewPerk() {
     const perkTypes = Object.values(PERK_TYPE);

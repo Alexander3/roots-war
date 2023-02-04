@@ -1,6 +1,6 @@
 import {drawPlayerBrush} from "../brush";
 import {createForServer, GameStatus} from "../gameSocket";
-import {calculateScores, copy} from "../domain";
+// import {calculateScores, copy} from "../domain";
 import {Player} from "../player";
 
 const SCALE = 0.1;
@@ -68,8 +68,8 @@ export default class extends Phaser.Scene {
       if (this.character) {
         this.character.player.update();
         if (Math.round(time / 2000) % 10 === 0) {
-          copy(this.hiddenSurface, this.textureSmall);
-          calculateScores(this.textureSmall, this.allPlayers())
+          // copy(this.hiddenSurface, this.textureSmall);
+          // calculateScores(this.textureSmall, this.allPlayers())
         }
         this.character.body.velocity = this.physics.velocityFromAngle(
             this.character.angle,

@@ -12,7 +12,6 @@ export function drawPlayerBrush(self, player) {
     );
 
 
-
-    self.hiddenSurface.draw(player.x - brushImage.width / 2,
-        player.y - brushImage.height / 2, player.player.singleColorBrush)
+    // self.hiddenSurface.draw(player.x - brushImage.width / 2,
+    //     player.y - brushImage.height / 2, player.player.singleColorBrush)
 }
