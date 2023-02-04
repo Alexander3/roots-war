@@ -22,6 +22,7 @@ export default class extends Phaser.Scene {
   bigBrush: Phaser.GameObjects.Image;
   timeText: Phaser.GameObjects.Text;
   endTime: number;
+  peacefulMusic: Phaser.Sound.BaseSound;
 
   constructor() {
     super({
@@ -76,6 +77,9 @@ export default class extends Phaser.Scene {
     this.spaceKey = this.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.SPACE
     );
+
+    this.peacefulMusic = this.sound.add('peaceful-music');
+    this.peacefulMusic.play();
     // this.worker = new SharedWorker('domain.js');
   }
 
