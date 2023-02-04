@@ -17,6 +17,7 @@ import disruptionFreeze from "../assets/images/perks/disruption-freeze.png";
 import fieldImage from "../assets/images/field.png";
 import tutorialImage from "../assets/images/menuBackground.png";
 import peacefulMusic from "../assets/sounds/peacful-music.mp3";
+import rootsBg from "../assets/images/roots_scores_bg.png";
 
 const vehicles = [
     vehicleImg1,
@@ -116,6 +117,7 @@ export default class extends Phaser.Scene {
         this.load.image('disruption-freeze', disruptionFreeze);
         this.load.image('field', fieldImage);
         this.load.image('tutorial', tutorialImage);
+        this.load.image('rootsBg', rootsBg);
 
         this.load.audio('peaceful-music', peacefulMusic);
 

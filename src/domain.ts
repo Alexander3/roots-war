@@ -5,6 +5,9 @@ var canvas = document.createElement('canvas');
 const DELTA_E_EPS = 50
 
 export function calculateScores(surface, players) {
+    for (const player of players) {
+        player.points=0
+    }
     surface.snapshot((snap) => {
         const ctx = canvas.getContext('2d', {willReadFrequently: true});
         ctx.canvas.width = surface.width;
@@ -24,7 +27,7 @@ export function calculateScores(surface, players) {
                     player.points += 1
             }
         }
-        console.log(players.map(p => p.points))
+        document.dispatchEvent(new Event('score-ready'));
     })
 
 }
