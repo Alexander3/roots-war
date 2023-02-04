@@ -2,12 +2,11 @@ import {Player} from "./player";
 import Game from "./scenes/Game";
 
 export function addCurrentPlayer(self, playerInfo) {
-    self.mainPlayer = addPlayer(self, playerInfo, 'current')
-
+    self.mainPlayer = addPlayer(self, playerInfo)
 }
 
 export function addOtherPlayer(self, playerInfo) {
-    const otherPlayer = addPlayer(self, playerInfo, 'other')
+    const otherPlayer = addPlayer(self, playerInfo)
     otherPlayer.playerId = playerInfo.playerId;
     self.otherPlayers.add(otherPlayer);
 
@@ -27,6 +26,6 @@ export function addOtherPlayer(self, playerInfo) {
     );
 }
 
-function addPlayer(self: Game, playerInfo, kind) {
-    return new Player(self, playerInfo, kind);
+function addPlayer(self: Game, playerInfo) {
+    return new Player(self, playerInfo);
 }

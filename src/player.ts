@@ -27,14 +27,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   oldPosition: { x: number; y: number; rotation: number };
   spriteName: string;
 
-  constructor(game: Game, playerInfo, kind: string) {
+  constructor(game: Game, playerInfo) {
     const {teamColor, brushColor, vehicle: spriteName} = getPlayerColors(playerInfo);
     super(game, playerInfo.x, playerInfo.y, spriteName);
 
     game.physics.add.existing(this, false);
     game.add.existing(this)
-
-    const isCurrent = kind === 'current';
 
     this.setOrigin(0.5, 0.5).setDisplaySize(90, 70);
 
@@ -42,20 +40,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.setAngle(45);
 
-    const velocity = game.physics.velocityFromAngle(
-        this.angle,
-        game.speed
-    )
-
-    if (isCurrent) {
-
-      this.setVelocity(velocity.x, velocity.y);
-    }
-
     // this.setTint(playerInfo.teamColor);
 
     this.color = colors.pop();
     this.orientation = 0;
+    this.visible = false;
     this.hasBigBrush = false;
     this.isBrushEnabled = true;
     this.teamColor = teamColor;
@@ -67,7 +56,17 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.spriteName = spriteName;
   }
 
-  update() {}
+  update() {
+  }
+
+  startGame(game: Game) {
+    const velocity = game.physics.velocityFromAngle(
+        this.angle,
+        game.speed
+    )
+    this.setVisible(true);
+    this.setVelocity(velocity.x, velocity.y);
+  }
 
   resetSpeed() {
     this.speed = DEFAULT_SPEED;
