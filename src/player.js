@@ -15,20 +15,10 @@ export class Player {
         this.hasBigBrush = false;
         this.teamColor = teamColor;
         this.brushColor = brushColor;
+        this.playerId = playerInfo.playerId;
     }
-
-    collectBigBrush() {
-        this.hasBigBrushLimit = 100;
-        this.hasBigBrush = true;
-    }
-
     update() {
-        if (this.hasBigBrushLimit > 0) {
-            this.hasBigBrushLimit = this.hasBigBrushLimit - 1;
-            if (this.hasBigBrushLimit <= 0) {
-                this.hasBigBrush = false;
-            }
-        }
+
     }
 }
 

@@ -81,7 +81,6 @@ io.on('connection', function (socket) {
         players[socket.id].x = movementData.x;
         players[socket.id].y = movementData.y;
         players[socket.id].rotation = movementData.rotation;
-        players[socket.id].hasBigBrush = movementData.hasBigBrush;
         // emit a message to all players about the player that moved
         socket.broadcast.emit('playerMoved', players[socket.id]);
     });
@@ -92,8 +91,18 @@ io.on('connection', function (socket) {
         } else {
             scores.blue += 10;
         }
+
         star.x = Math.floor(Math.random() * GAME_WIDTH);
         star.y = Math.floor(Math.random() * GAME_HEIGHT);
+
+        // notify that big brush has been activated
+        io.emit('bigBrushActivated', players[socket.id].playerId);
+
+        // notify that big brush has been deactivated
+        setTimeout(() => {
+            io.emit('bigBrushDeactivated', players[socket.id].playerId);
+        }, 1000)
+
         io.emit('starLocation', star);
         io.emit('scoreUpdate', scores);
     });

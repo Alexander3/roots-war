@@ -5,6 +5,9 @@ import {drawPlayerBrush} from "./brush";
 export function createForServer(self) {
     self.socket = io.connect("http://localhost:8081");
     self.otherPlayers = self.physics.add.group();
+    self.allPlayers = () => {
+        return [self.character, ...self.otherPlayers.getChildren()];
+    }
 
     // ADDING EXISTING PLAYERS WHEN JOINING AS NEW PLAYER
     self.socket.on("currentPlayers", function (players) {
@@ -41,12 +44,28 @@ export function createForServer(self) {
                 otherPlayer.setRotation(playerInfo.rotation);
                 // set player position
                 otherPlayer.setPosition(playerInfo.x, playerInfo.y);
-                // set big brush based on server state
-                otherPlayer.player.hasBigBrush = playerInfo.hasBigBrush;
                 // draw player brush
                 drawPlayerBrush(self, otherPlayer)
             }
         });
+    });
+
+    // RECEIVING INFO ABOUT BIG BRUSH ACTIVATION
+    self.socket.on("bigBrushActivated", function (playerId) {
+        self.allPlayers().forEach((sprite) => {
+            if (sprite.player.playerId === playerId) {
+                sprite.player.hasBigBrush = true;
+            }
+        })
+    });
+
+    // RECEIVING INFO ABOUT BIG BRUSH DEACTIVATION
+    self.socket.on("bigBrushDeactivated", function (playerId) {
+        self.allPlayers().forEach((sprite) => {
+            if (sprite.player.playerId === playerId) {
+                sprite.player.hasBigBrush = false;
+            }
+        })
     });
 
     // CREATING INPUT CONTROLS FOR CURRENT PLAYER
@@ -81,7 +100,7 @@ export function createForServer(self) {
             self.character,
             self.star,
             function () {
-                self.character.player.collectBigBrush();
+                // self.character.player.collectBigBrush();
                 self.socket.emit("starCollected");
             },
             null,
