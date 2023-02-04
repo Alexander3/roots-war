@@ -15,7 +15,7 @@ import enhanceSpeedImage from "../assets/images/perks/improvement-increase-speed
 import disruptionNoSeedsImage from "../assets/images/perks/disruption-no-seeds.png";
 import disruptionFreeze from "../assets/images/perks/disruption-freeze.png";
 import fieldImage from "../assets/images/field.png";
-import tutorialImage from "../assets/images/gimp_intro.png";
+import tutorialImage from "../assets/images/menuBackground.png";
 import peacefulMusic from "../assets/sounds/peacful-music.mp3";
 
 const vehicles = [
