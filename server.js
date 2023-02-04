@@ -27,7 +27,8 @@ var scores = {
 
 var PERK_TYPE = {
     STAR: 'star',
-    SHOE: 'shoe'
+    SHOE: 'shoe',
+    CLOCK: 'clock'
 }
 
 const GAME_LENGTH = 5000
@@ -159,6 +160,9 @@ io.on('connection', function (socket) {
             case PERK_TYPE.SHOE:
                 handleShoeCollection();
                 break;
+            case PERK_TYPE.CLOCK:
+                handleClockCollection();
+                break;
         }
     }
 
@@ -180,6 +184,16 @@ io.on('connection', function (socket) {
         setTimeout(() => {
             io.emit('shoeDeactivated', players[socket.id].playerId);
         }, 2000);
+    }
+
+    function handleClockCollection() {
+        // notify that big brush has been activated
+        io.emit('clockActivated', players[socket.id].playerId);
+
+        // notify that big brush has been deactivated
+        setTimeout(() => {
+            io.emit('clockDeactivated', players[socket.id].playerId);
+        }, 1500);
     }
 });
 

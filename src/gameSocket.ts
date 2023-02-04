@@ -105,6 +105,24 @@ export function createForServer(self) {
         })
     });
 
+    // RECEIVING INFO ABOUT CLOCK ACTIVATION
+    self.socket.on("clockActivated", function (playerId) {
+        self.allPlayers().forEach((sprite) => {
+            if (sprite.player.playerId !== playerId) {
+                sprite.player.speed = 0;
+            }
+        })
+    });
+
+    // RECEIVING INFO ABOUT CLOCK DEACTIVATION
+    self.socket.on("clockDeactivated", function (playerId) {
+        self.allPlayers().forEach((sprite) => {
+            if (sprite.player.playerId !== playerId) {
+                sprite.player.resetSpeed()
+            }
+        })
+    });
+
     // CREATING INPUT CONTROLS FOR CURRENT PLAYER
     self.cursors = self.input.keyboard.createCursorKeys();
 
