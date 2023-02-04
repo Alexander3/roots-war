@@ -137,13 +137,15 @@ function addOtherPlayers(self, playerInfo) {
     otherPlayer.playerId = playerInfo.playerId;
     self.otherPlayers.add(otherPlayer);
 }
+import BootScene from "./scenes/Boot";
+import MenuScene from "./scenes/Menu";
+import { calculate_scores } from "./domain";
+import { HEIGHT, WIDTH } from "./constants";
+import { Player } from "./player";
 
 const config = {
     type: Phaser.AUTO,
     parent: "phaser-example",
-    width: 800,
-    height: 600,
-    scene: MyScene,
     physics: {
         default: 'arcade',
         arcade: {
@@ -151,12 +153,27 @@ const config = {
             gravity: {y: 0}
         }
     },
+    width: WIDTH,
+    height: HEIGHT,
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+    },
+    backgroundColor: "#4488aa",
+    scene: [BootScene, MenuScene],
 };
+let lastCalc = 0;
+const players = [new Player()]
+
 
 class MyGame extends Phaser.Game {
     step(time, delta) {
         super.step(time, delta);
-        console.log("dupa");
+
+        if (time > 2000 && Math.round(time / 3000) > lastCalc) {
+            calculate_scores(this.canvas);
+            lastCalc += 1;
+        }
     }
 }
 
