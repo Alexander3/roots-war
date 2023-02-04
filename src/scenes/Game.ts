@@ -18,6 +18,8 @@ export default class extends Phaser.Scene {
   allPlayers: () => Player[]
   private standardBrush: Phaser.GameObjects.Image;
   private bigBrush: Phaser.GameObjects.Image;
+  private timeText: Phaser.GameObjects.Text;
+  private endTime: number;
 
   constructor() {
     super({
@@ -36,6 +38,10 @@ export default class extends Phaser.Scene {
     this.surface = this.add.renderTexture(0, 0, w, h);
     this.standardBrush = this.add.image(100, 100, 'brushStandard').setVisible(false).setOrigin(0.5,0.5);
     this.bigBrush = this.add.image(100, 100, 'brushBig').setVisible(false).setOrigin(0.5,0.5);
+
+
+    this.timeText = this.add.text(w/2, h-15, '', { font: '32px severinaregular', fill: '#ffffff' });
+    this.timeText.setOrigin(0.5, 0.5);
 
 
 
@@ -72,6 +78,7 @@ export default class extends Phaser.Scene {
     if (gameStatus === GameStatus.Start) {
       this.tutorial.destroy();
       this.promptText.destroy();
+      this.endTime = Date.now() + 60000;
     }
   }
 
@@ -84,6 +91,13 @@ export default class extends Phaser.Scene {
     } else if (this.gameStatus === GameStatus.Finished) {
       this.scene.start("Scores");
     } else {
+      if(this.endTime){
+         const timeRemaining = Math.ceil((this.endTime - Date.now()) / 1000);
+        this.timeText.text = timeRemaining + ' seconds remaining';
+
+      }
+
+
       if (this.cursors.left.isDown) {
         this.character.angle -= 4;
       } else if (this.cursors.right.isDown) {
