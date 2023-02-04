@@ -1,7 +1,3 @@
-import brush from "../assets/brush.png";
-import brush2 from "../assets/brush2.png";
-import characterImg from "../assets/vehicle3.png";
-import logoStar from "../assets/star_gold.png";
 import {drawPlayerBrush} from "../brush";
 import {createForServer} from "../gameSocket";
 // import {calculate_scores} from "../domain";
@@ -13,17 +9,6 @@ export default class extends Phaser.Scene {
         });
 
         this.velocity = 300;
-    }
-
-    preload() {
-        this.load.image("brush", brush);
-        this.load.image("brush2", brush2);
-        this.load.spritesheet("character", characterImg, {
-            frameWidth: 178,
-            frameHeight: 141,
-        });
-
-        this.load.image('star', logoStar);
     }
 
     create() {

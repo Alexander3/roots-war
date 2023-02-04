@@ -1,6 +1,9 @@
 import Phaser from 'phaser'
 import WebFont from 'webfontloader'
-import progressBarFilled from '../assets/images/loading/progress-bar-filled.png';
+import brush from "../assets/brush.png";
+import brush2 from "../assets/brush2.png";
+import characterImg from "../assets/vehicle3.png";
+import logoStar from "../assets/star_gold.png";
 
 export default class extends Phaser.Scene {
     constructor() {
@@ -88,10 +91,13 @@ export default class extends Phaser.Scene {
         });
 
 
-        // dummy loading
-        for (var i = 0; i < 1000; i++) {
-            this.load.image('logo' + i, progressBarFilled);
-        }
+        this.load.image("brush", brush);
+        this.load.image("brush2", brush2);
+        this.load.spritesheet("character", characterImg, {
+            frameWidth: 178,
+            frameHeight: 141,
+        });
+        this.load.image('star', logoStar);
     }
 
 
