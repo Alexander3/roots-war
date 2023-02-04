@@ -14,7 +14,7 @@ export function disconnectWithServer(self) {
 }
 
 export function createForServer(self) {
-    self.socket = io.connect("http://localhost:8081");
+    self.socket = io.connect(`http://${location.hostname}:8081`);
     self.otherPlayers = self.physics.add.group();
     self.allPlayers = () => {
         return [self.character, ...self.otherPlayers.getChildren()];
@@ -22,10 +22,14 @@ export function createForServer(self) {
 
     // ADDING EXISTING PLAYERS WHEN JOINING AS NEW PLAYER
     self.socket.on("currentPlayers", function (players: Player[]) {
+        const [_, currentPlayerInfo] = Object.entries(players).find(([playerId, playerInfo]) => {
+            return playerId === self.socket.id
+        });
+
+        addCurrentPlayer(self, currentPlayerInfo);
+
         Object.keys(players).forEach(function (id) {
-            if (players[id].playerId === self.socket.id) {
-                addCurrentPlayer(self, players[id]);
-            } else {
+            if (players[id].playerId !== self.socket.id) {
                 addOtherPlayer(self, players[id]);
             }
         });
@@ -127,7 +131,6 @@ export function createForServer(self) {
     self.socket.on("noPaintActivated", function (playerId) {
         self.allPlayers().forEach((sprite) => {
             if (sprite.player.playerId !== playerId) {
-                console.log("DISABLE paint for", playerId)
                 sprite.player.disablePaint();
             }
         })
@@ -137,8 +140,30 @@ export function createForServer(self) {
     self.socket.on("noPaintDeactivated", function (playerId) {
         self.allPlayers().forEach((sprite) => {
             if (sprite.player.playerId !== playerId) {
-                console.log("ENABLE paint for", playerId)
                 sprite.player.enablePaint();
+            }
+        })
+    });
+
+    // RECEIVING INFO ABOUT COLLISION BETWEEN TWO PLAYERS
+    self.socket.on("playerCollided", function ({player1, player2}) {
+        self.allPlayers().forEach((sprite) => {
+            if (sprite.player.playerId === player1 || sprite.player.playerId === player2) {
+                sprite.angle += 120;
+                sprite.alpha = 0.5;
+                sprite.player.speed /= 2;
+                sprite.player.disableCollision()
+            }
+        })
+    });
+
+    // RECEIVING INFO ABOUT COLLISION BETWEEN TWO PLAYERS
+    self.socket.on("playerCanCollideAgain", function ({player1, player2}) {
+        self.allPlayers().forEach((sprite) => {
+            if (sprite.player.playerId === player1 || sprite.player.playerId === player2) {
+                sprite.alpha = 1;
+                sprite.player.resetSpeed()
+                sprite.player.enableCollision()
             }
         })
     });

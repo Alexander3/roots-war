@@ -1,16 +1,13 @@
-import {drawPlayerBrush} from "../brush";
+import { drawPlayerBrush } from "../brush";
+import { calculateScores } from "../domain";
 import {createForServer, GameStatus} from "../gameSocket";
-// import {calculateScores, copy} from "../domain";
 import {Player} from "../player";
-
-const SCALE = 0.1;
 
 export default class extends Phaser.Scene {
   speed: number;
   surface: Phaser.GameObjects.RenderTexture;
   tutorial: Phaser.GameObjects.Sprite;
   textureSmall: Phaser.Textures.CanvasTexture;
-  hiddenSurface: Phaser.Textures.CanvasTexture;
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   character: any;
   gameStatus: GameStatus
@@ -31,9 +28,6 @@ export default class extends Phaser.Scene {
     const h = this.game.config.height as number
 
     this.surface = this.add.renderTexture(0, 0, w, h);
-    this.hiddenSurface = this.textures.createCanvas("hiddenSurface", w, h);
-    this.textureSmall = this.textures.createCanvas("canvastextureSmall", SCALE * w, SCALE * h);
-
     this.anims.create({
       key: "walk",
       frames: this.anims.generateFrameNumbers("character", {}),
@@ -42,6 +36,8 @@ export default class extends Phaser.Scene {
 
     this.tutorial = this.add.sprite(0, 0, 'tutorial');
     this.cursors = this.input.keyboard.createCursorKeys();
+
+    // this.worker = new SharedWorker('domain.js');
   }
 
   update(time) {
@@ -61,10 +57,9 @@ export default class extends Phaser.Scene {
 
       if (this.character) {
         this.character.player.update();
-        if (Math.round(time / 2000) % 10 === 0) {
-          // copy(this.hiddenSurface, this.textureSmall);
-          // calculateScores(this.textureSmall, this.allPlayers())
-        }
+        // if (Math.round(time / 2000) % 10 === 0) {
+        //   calculateScores(this.surface, this.allPlayers())
+        // }
         this.character.body.velocity = this.physics.velocityFromAngle(
             this.character.angle,
             this.character.player.speed

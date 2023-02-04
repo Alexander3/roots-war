@@ -4,7 +4,7 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server, {
     cors: {
-        origin: "http://localhost:8080",
+        origin: "*",
         methods: ["GET", "POST"]
     }
 });
@@ -32,7 +32,7 @@ var PERK_TYPE = {
     DISRUPTION_NO_SEED: 'disruption-no-seeds'
 }
 
-const GAME_LENGTH = 30000
+const GAME_LENGTH = 300000
 
 function drawNewPerk() {
     const perkTypes = Object.values(PERK_TYPE);
@@ -135,6 +135,14 @@ io.on('connection', function (socket) {
         players[socket.id].rotation = movementData.rotation;
         // emit a message to all players about the player that moved
         socket.broadcast.emit('playerMoved', players[socket.id]);
+    });
+
+    socket.on('playersCollision', function ({player1, player2}) {
+        io.emit('playerCollided', {player1, player2});
+
+        setTimeout(() => {
+            io.emit('playerCanCollideAgain', {player1, player2});
+        }, 3000);
     });
 
     socket.on('perkCollected', function (perkType) {

@@ -1,36 +1,30 @@
-export function calculateScores(canvasTexture, players) {
-    const pixels = canvasTexture.getPixels();
-    const playerMap = Object.fromEntries(players.map(p => ([p.player.brushColor, p])))
-    const scores = {};
+import chroma from "chroma-js";
 
-    for (let x = 0, c = pixels.length; x < c; x++) {
-        const row = pixels[x];
-        for (let y = 0, r = row.length; y < r; y++) {
-            const color = row[y].color
-            const player = playerMap[color]
-            if (player) player.player.points++;
+var canvas = document.createElement('canvas');
 
-            // if (!scores[color]) scores[color] = 0;
-            // scores[color] += 1;
+const DELTA_E_EPS = 50
+
+export function calculateScores(surface, players) {
+    surface.snapshot((snap) => {
+        const ctx = canvas.getContext('2d', {willReadFrequently: true});
+        ctx.canvas.width = surface.width;
+        ctx.canvas.height = surface.height;
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(snap, 0, 0);
+        const pixels = ctx.getImageData(0, 0, surface.width, surface.height).data;
+        for (let x = 0; x < pixels.length; x += 4) {
+            const r = pixels[x]
+            const g = pixels[x + 1]
+            const b = pixels[x + 2]
+
+            const color = chroma(r, g, b, 'rgb');
+            for (const player of players) {
+                if (chroma.deltaE(color, player.player.brushColorObj) < DELTA_E_EPS)
+                    player.player.points += 1
+            }
         }
-    }
-    console.log(scores, players.map(p => p.player.points))
-}
+        console.log(players.map(p => p.player.points))
+    })
 
-export function copy(sourceTexture, destTexture) {
-    destTexture
-        .clear()
-        .getContext()
-        .drawImage(
-            sourceTexture.canvas,
-            0,
-            0,
-            sourceTexture.width,
-            sourceTexture.height,
-            0,
-            0,
-            destTexture.width,
-            destTexture.height
-        );
-    destTexture.update();
 }

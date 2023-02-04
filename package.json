@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "build": "webpack --config webpack/prod.js ",
-    "start": "webpack-dev-server --config webpack/base.js --open"
+    "start": "webpack-dev-server --config webpack/base.js --open --host 0.0.0.0"
   },
   "repository": {
     "type": "git",
@@ -35,6 +35,7 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
+    "chroma-js": "^2.4.2",
     "colormap": "^2.3.2",
     "express": "^4.18.2",
     "http": "^0.0.1-security",
