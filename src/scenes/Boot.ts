@@ -1,19 +1,20 @@
 import Phaser from 'phaser'
 import brushStandard from "../assets/brushStandard.png";
 import brushBig from "../assets/brushBig.png";
-import characterImg1 from "../assets/vehicle4.png";
-import characterImg2 from "../assets/vehicle5.png";
-import characterImg3 from "../assets/vehicle5.png";
-import characterImg4 from "../assets/vehicle5.png";
+import characterImg1 from "../assets/vehicle1.png";
+import characterImg2 from "../assets/vehicle2.png";
+import characterImg3 from "../assets/vehicle3.png";
+import characterImg4 from "../assets/vehicle4.png";
 import enhanceScopeImage from "../assets/images/perks/improvement-enhance-signal.png";
 import enhanceSpeedImage from "../assets/images/perks/improvement-increase-speed.png";
 import disruptionNoSeedsImage from "../assets/images/perks/disruption-no-seeds.png";
 import disruptionFreeze from "../assets/images/perks/disruption-freeze.png";
-import tutorial from "../assets/images/apple.png";
-import dirt from "../assets/dirt.png";
+import fieldImage from "../assets/images/field.png";
+import tutorialImage from "../assets/images/gimp_intro.png";
 
 export default class extends Phaser.Scene {
     fontsReady: boolean;
+
 
     constructor() {
         super({
@@ -104,10 +105,10 @@ export default class extends Phaser.Scene {
         });
         this.load.image('enhance-scope', enhanceScopeImage);
         this.load.image('enhance-speed', enhanceSpeedImage);
-        this.load.image('dirt', dirt);
         this.load.image('disruption-no-seeds', disruptionNoSeedsImage);
         this.load.image('disruption-freeze', disruptionFreeze);
-        this.load.image('tutorial', tutorial);
+        this.load.image('field', fieldImage);
+        this.load.image('tutorial', tutorialImage);
 
         this.load.start();
     }

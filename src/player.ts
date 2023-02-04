@@ -25,6 +25,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   points = 0;
   brushColorObj: any;
   oldPosition: { x: number; y: number; rotation: number };
+  spriteName: string;
 
   constructor(game: Game, playerInfo, kind: string) {
     super(game, playerInfo.x, playerInfo.y, "character1");
@@ -43,7 +44,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       this.angle,
       game.speed
     )
-    
+
     if (isCurrent) {
 
       this.setVelocity(velocity.x, velocity.y);
@@ -51,7 +52,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     // this.setTint(playerInfo.teamColor);
 
-    const { teamColor, brushColor } = getPlayerColors(playerInfo);
+    const {teamColor, brushColor, character: spriteName} = getPlayerColors(playerInfo);
 
     this.color = colors.pop();
     this.orientation = 0;
@@ -63,6 +64,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.playerId = playerInfo.playerId;
     this.speed = DEFAULT_SPEED;
     this.collisionPossible = true;
+    this.spriteName = spriteName;
   }
 
   update() {}
@@ -98,29 +100,40 @@ export const invertRB = (colour) => {
 
 const getPlayerColors = ({ team }) => {
   switch (team) {
-    case "red":
+    case "orange":
       return {
+        character: 'character1',
         teamColor: 0xff0000,
         brushColor: invertRB(0xeba534),
       };
-    case "blue":
+    case "white":
       return {
-        teamColor: 0x0000ff,
-        brushColor: invertRB(0xdbeb34),
+        character: 'character2',
+        teamColor: 0xffffff,
+        brushColor: invertRB(0xffffff),
       };
     case "green":
       return {
+        character: 'character3',
         teamColor: 0x00ff00,
         brushColor: invertRB(0x199147),
       };
     case "pink":
       return {
+        character: 'character4',
         teamColor: 0x6c12a3,
         brushColor: invertRB(0xdbb0ef),
+      };
+    case "red":
+      return {
+        character: 'character5',
+        teamColor: 0xff0000,
+        brushColor: invertRB(0xff0000),
       };
   }
   return {
     teamColor: 0x000000,
     brushColor: 0x00000,
+    character: 'character6'
   };
 };

@@ -10,14 +10,17 @@ export default class extends Phaser.Scene {
   textureSmall: Phaser.Textures.CanvasTexture;
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   gameStatus: GameStatus;
+  spaceKey: Phaser.Input.Keyboard.Key;
   socket: any;
   otherPlayers: Phaser.Physics.Arcade.Group;
   perk: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
   mainPlayer: Player;
+  promptText: Phaser.GameObjects.Text;
 
   allPlayers: () => Player[];
   standardBrush: Phaser.GameObjects.Image;
   bigBrush: Phaser.GameObjects.Image;
+  timeText: Phaser.GameObjects.Text;
 
   constructor() {
     super({
@@ -31,11 +34,18 @@ export default class extends Phaser.Scene {
     const w = this.game.config.width as number;
     const h = this.game.config.height as number;
 
-    const tilingSprite = this.add.tileSprite(0, 0, w*2, h*2, 'dirt')
-    tilingSprite.setTileScale(0.5, 0.5);
+    this.add.tileSprite(w / 2, h / 2, 1920, 1080, "field");
+
     this.surface = this.add.renderTexture(0, 0, w, h);
     this.standardBrush = this.add.image(100, 100, 'brushStandard').setVisible(false).setOrigin(0.5,0.5);
     this.bigBrush = this.add.image(100, 100, 'brushBig').setVisible(false).setOrigin(0.5,0.5);
+
+
+    this.timeText = this.add.text(w/2, h-15, '', { font: '32px severinaregular' });
+    this.timeText.setOrigin(0.5, 0.5);
+
+
+
 
     this.anims.create({
       key: "walk",
@@ -43,17 +53,28 @@ export default class extends Phaser.Scene {
       frameRate: 3,
     });
 
-    this.tutorial = this.add.sprite(0, 0, "tutorial");
-    this.cursors = this.input.keyboard.createCursorKeys();
+    this.tutorial = this.add.sprite(w / 2, h / 2, "tutorial");
+
+    this.promptText = this.make
+      .text({
+        x: w / 2,
+        y: h - h / 10,
+        text: "Press spacebar if you are ready to play!",
+        style: {
+          font: "48px monospace",
+          color: "#ffffff",
+        },
+      })
+      .setOrigin(0.5, 0.5);
 
     // this.worker = new SharedWorker('domain.js');
   }
 
   update(time) {
     if (this.gameStatus === GameStatus.Waiting) {
-      if (this.cursors.right.isDown) {
-        this.tutorial.destroy();
+      if (this.spaceKey.isDown) {
         this.socket.emit("playerReady");
+        this.promptText.setText("Waiting for other players!");
       }
     } else if (this.gameStatus === GameStatus.Finished) {
       this.scene.start("Scores");
@@ -89,7 +110,7 @@ export default class extends Phaser.Scene {
           this.mainPlayer.oldPosition &&
           (x !== this.mainPlayer.oldPosition.x ||
             y !== this.mainPlayer.oldPosition.y ||
-            r !== this.mainPlayer.oldPosition.rotation)
+            r !== this.mainPlayer.oldPosition.rotation) 
         ) {
           this.socket.emit("playerMovement", {
             x,

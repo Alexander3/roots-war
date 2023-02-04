@@ -10,20 +10,18 @@ var io = require('socket.io')(server, {
 });
 
 const colors = [
-    'red',
-    'blue',
+    'orange',
+    'white',
     'green',
-    'pink'
+    'pink',
+    'red',
+    'black',
 ]
 
 var GAME_WIDTH = 1920;
 var GAME_HEIGHT = 1080;
 
 var players = {};
-var scores = {
-    blue: 0,
-    red: 0
-};
 
 var PERK_TYPE = {
     ENHANCE_SCOPE: 'enhance-scope',
@@ -77,6 +75,13 @@ const checkGameCanBeStarted = () => {
 const changeGameStatus = (status) => {
     gameStatus = status
     io.emit('gameStatusChanged', status);
+
+    if (status === 'started') {
+        setTimeout(() => {
+            // drop first perk after some time
+            io.emit('perkDrop', perk);
+        }, Math.random() * 1000 + 2000)
+    }
 }
 
 const stopGame = () => {
@@ -86,20 +91,63 @@ const stopGame = () => {
 const tryToStartGame = () => {
     if (checkGameCanBeStarted()) {
         changeGameStatus('started')
+
         setTimeout(() => {
             stopGame();
         }, GAME_LENGTH)
     }
 }
 
+const initialPositionsPool = [
+    {
+        id: 1,
+        x: GAME_WIDTH / 4,
+        y: GAME_HEIGHT / 4,
+        available: true
+    },
+    {
+        id: 2,
+        x: GAME_WIDTH - GAME_WIDTH / 4,
+        y: GAME_HEIGHT / 4,
+        available: true
+    },
+    {
+        id: 3,
+        x: GAME_WIDTH / 4,
+        y: GAME_HEIGHT - GAME_HEIGHT / 4,
+        available: true
+    },
+    {
+        id: 4,
+        x: GAME_WIDTH - GAME_WIDTH / 4,
+        y: GAME_HEIGHT - GAME_HEIGHT / 4,
+        available: true
+    }
+]
+
+function getInitialPlayerPosition() {
+    const position = _.sample(initialPositionsPool.filter(position => position.available));
+
+    if (position) {
+        position.available = false;
+    }
+
+    return position ?? {
+        x: Math.floor(Math.random() * GAME_WIDTH),
+        y: Math.floor(Math.random() * GAME_HEIGHT),
+    }
+}
+
 io.on('connection', function (socket) {
     const team = getTeam();
+    const initialPosition = getInitialPlayerPosition();
+    console.log(initialPosition);
     console.log('a user connected: ', socket.id, team);
     // create a new player and add it to our players object
     players[socket.id] = {
         rotation: 0,
-        x: Math.floor(Math.random() * GAME_WIDTH),
-        y: Math.floor(Math.random() * GAME_HEIGHT),
+        x: initialPosition.x,
+        y: initialPosition.y,
         playerId: socket.id,
         team
     };
@@ -113,8 +161,6 @@ io.on('connection', function (socket) {
             tryToStartGame();
         }, 2000)
     });
-    // send the star object to the new player
-    socket.emit('perkDrop', perk);
     // update all other players of the new player
     socket.broadcast.emit('newPlayer', players[socket.id]);
 
@@ -148,7 +194,7 @@ io.on('connection', function (socket) {
 
     socket.on('perkCollected', function (perkType) {
         // handle perk action
-        handlePerk(perkType);
+        handlePerk(perkType, players[socket.id].playerId);
 
         // draw new random perk in random position
         perk = drawNewPerk();
@@ -158,60 +204,61 @@ io.on('connection', function (socket) {
     });
 
 
-    function handlePerk(perkType) {
+    function handlePerk(perkType, collectingPlayerId) {
         switch (perkType) {
             case PERK_TYPE.ENHANCE_SCOPE:
-                handleStarCollection()
+                handleStarCollection(collectingPlayerId)
                 break;
             case PERK_TYPE.ENHANCE_SPEED:
-                handleShoeCollection();
+                handleShoeCollection(collectingPlayerId);
                 break;
             case PERK_TYPE.DISRUPTION_FREEZE:
-                handleClockCollection();
+                handleClockCollection(collectingPlayerId);
                 break;
             case PERK_TYPE.DISRUPTION_NO_SEED:
-                handleNoPaintCollection();
+                handleNoPaintCollection(collectingPlayerId);
                 break;
         }
     }
 
-    function handleStarCollection() {
+    function handleStarCollection(collectingPlayerId) {
         // notify that big brush has been activated
-        io.emit('bigBrushActivated', players[socket.id].playerId);
+        io.emit('bigBrushActivated', collectingPlayerId);
 
         // notify that big brush has been deactivated
         setTimeout(() => {
-            io.emit('bigBrushDeactivated', players[socket.id].playerId);
+            io.emit('bigBrushDeactivated', collectingPlayerId);
         }, 3000);
     }
 
-    function handleShoeCollection() {
+    function handleShoeCollection(collectingPlayerId) {
         // notify that big brush has been activated
-        io.emit('shoeActivated', players[socket.id].playerId);
+        io.emit('shoeActivated', collectingPlayerId);
 
         // notify that big brush has been deactivated
         setTimeout(() => {
-            io.emit('shoeDeactivated', players[socket.id].playerId);
+            io.emit('shoeDeactivated', collectingPlayerId);
         }, 2000);
     }
 
-    function handleClockCollection() {
+    function handleClockCollection(collectingPlayerId) {
         // notify that big brush has been activated
-        io.emit('clockActivated', players[socket.id].playerId);
+        io.emit('clockActivated', collectingPlayerId);
 
         // notify that big brush has been deactivated
         setTimeout(() => {
-            io.emit('clockDeactivated', players[socket.id].playerId);
+            io.emit('clockDeactivated', collectingPlayerId);
         }, 1500);
     }
 
-    function handleNoPaintCollection() {
+    function handleNoPaintCollection(collectingPlayerId) {
+
         // notify that big brush has been activated
-        io.emit('noPaintActivated', players[socket.id].playerId);
+        io.emit('noPaintActivated', collectingPlayerId);
 
         // notify that big brush has been deactivated
         setTimeout(() => {
-            io.emit('noPaintDeactivated', players[socket.id].playerId);
+            io.emit('noPaintDeactivated', collectingPlayerId);
         }, 1200);
     }
 });
