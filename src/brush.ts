@@ -10,4 +10,9 @@ export function drawPlayerBrush(self, player) {
         1,
         player.player.brushColor
     );
+
+
+
+    self.hiddenSurface.draw(player.x - brushImage.width / 2,
+        player.y - brushImage.height / 2, player.player.singleColorBrush)
 }

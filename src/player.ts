@@ -16,6 +16,8 @@ export class Player {
   brushColor: number;
   playerId: string;
   speed: number;
+  points=0;
+  private singleColorBrush: HTMLCanvasElement;
 
   constructor(playerInfo) {
     const { teamColor, brushColor } = getPlayerColors(playerInfo);
@@ -27,6 +29,16 @@ export class Player {
     this.brushColor = brushColor;
     this.playerId = playerInfo.playerId;
     this.speed = DEFAULT_SPEED;
+
+    //TODO Should it be here?
+    const circle = document.createElement('canvas');
+    const ctx = circle.getContext('2d');
+    ctx.beginPath();
+    ctx.arc(16, 16, 16, 0, 2 * Math.PI);
+    ctx.fillStyle='#' + brushColor.toString(16)
+    ctx.fill()
+
+    this.singleColorBrush = circle
   }
   update() {}
 
