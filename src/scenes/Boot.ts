@@ -15,6 +15,7 @@ import tutorialImage from "../assets/images/gimp_intro.png";
 export default class extends Phaser.Scene {
     fontsReady: boolean;
 
+
     constructor() {
         super({
             key: "Boot"
