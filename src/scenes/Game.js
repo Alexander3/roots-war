@@ -15,10 +15,6 @@ export default class extends Phaser.Scene {
         createForServer(this);
 
         this.surface = this.add.renderTexture(0, 0, this.game.config.width, this.game.config.height);
-        const bigBrush = this.add.image(64, 64, 'brush2');
-        bigBrush.setOrigin(0.5, 0.5)
-        // bigBrush.scale = 2; // Resize the image
-        this.bigBrush = bigBrush;
 
         this.anims.create({
             key: "walk",
@@ -43,6 +39,7 @@ export default class extends Phaser.Scene {
                 this.character.angle,
                 this.velocity
             );
+
             drawPlayerBrush(this, this.character)
 
             this.physics.world.wrap(this.character, 32);
