@@ -29,11 +29,10 @@ export function addPlayer(self, playerInfo, kind) {
     const isCurrent = kind === 'current';
     const content = isCurrent ? self.physics : self.physics;
     const character = content.add
-        .sprite(playerInfo.x, playerInfo.y, "character")
-        .setOrigin(0.5, 0.5)
-        .setDisplaySize(53, 40);
+        .sprite(playerInfo.x, playerInfo.y, "character2")
+        .setOrigin(0.5, 0.5).setScale(0.5)
 
-    character.play({key: "walk", repeat: -1});
+    // character.play({key: "walk", repeat: -1});
 
     character.setAngle(45);
     if (isCurrent) {
@@ -44,6 +43,6 @@ export function addPlayer(self, playerInfo, kind) {
     }
     const player = new Player(playerInfo)
     character.player = player
-    character.setTint(player.teamColor);
+    // character.setTint(player.teamColor);
     return character;
 }

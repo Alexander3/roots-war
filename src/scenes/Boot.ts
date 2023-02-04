@@ -2,7 +2,10 @@ import Phaser from 'phaser'
 import WebFont from 'webfontloader'
 import brushStandard from "../assets/brushStandard.png";
 import brushBig from "../assets/brushBig.png";
-import characterImg from "../assets/vehicle3.png";
+import characterImg1 from "../assets/vehicle4.png";
+import characterImg2 from "../assets/vehicle5.png";
+import characterImg3 from "../assets/vehicle5.png";
+import characterImg4 from "../assets/vehicle5.png";
 import enhanceScopeImage from "../assets/images/perks/improvement-enhance-signal.png";
 import enhanceSpeedImage from "../assets/images/perks/improvement-increase-speed.png";
 import disruptionNoSeedsImage from "../assets/images/perks/disruption-no-seeds.png";
@@ -97,7 +100,19 @@ export default class extends Phaser.Scene {
 
         this.load.image("brushStandard", brushStandard);
         this.load.image("brushBig", brushBig);
-        this.load.spritesheet("character", characterImg, {
+        this.load.spritesheet("character1", characterImg1, {
+            frameWidth: 178,
+            frameHeight: 141,
+        });
+        this.load.spritesheet("character2", characterImg2, {
+            frameWidth: 178,
+            frameHeight: 141,
+        });
+        this.load.spritesheet("character3", characterImg3, {
+            frameWidth: 178,
+            frameHeight: 141,
+        });
+        this.load.spritesheet("character4", characterImg4, {
             frameWidth: 178,
             frameHeight: 141,
         });
