@@ -1,5 +1,4 @@
 import Phaser from 'phaser'
-import WebFont from 'webfontloader'
 import brushStandard from "../assets/brushStandard.png";
 import brushBig from "../assets/brushBig.png";
 import characterImg1 from "../assets/vehicle4.png";
@@ -10,7 +9,7 @@ import enhanceScopeImage from "../assets/images/perks/improvement-enhance-signal
 import enhanceSpeedImage from "../assets/images/perks/improvement-increase-speed.png";
 import disruptionNoSeedsImage from "../assets/images/perks/disruption-no-seeds.png";
 import disruptionFreeze from "../assets/images/perks/disruption-freeze.png";
-import fieldImage from "../assets/images/field.jpg";
+import fieldImage from "../assets/images/field.png";
 import tutorialImage from "../assets/images/gimp_intro.png";
 
 export default class extends Phaser.Scene {

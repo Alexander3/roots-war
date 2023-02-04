@@ -46,7 +46,7 @@ function drawNewPerk() {
 }
 
 var perk = drawNewPerk();
-var gameStatus = 'waiting';
+var gameStatus = 'started';
 
 app.use(express.static(__dirname + '/public'));
 
@@ -69,6 +69,7 @@ const getTeam = () => {
 }
 
 const checkGameCanBeStarted = () => {
+    return true
     const p = Object.values(players);
     return gameStatus !== 'started' && p.filter((p) => !p.ready).length === 0 && p.length > 1;
 }
@@ -181,7 +182,7 @@ io.on('connection', function (socket) {
         // notify that big brush has been deactivated
         setTimeout(() => {
             io.emit('bigBrushDeactivated', players[socket.id].playerId);
-        }, 1000);
+        }, 3000);
     }
 
     function handleShoeCollection() {

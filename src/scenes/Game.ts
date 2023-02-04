@@ -15,7 +15,9 @@ export default class extends Phaser.Scene {
   socket: any;
   promptText: Phaser.GameObjects.Text;
 
-  allPlayers: () => Player[];
+  allPlayers: () => Player[]
+  private standardBrush: Phaser.GameObjects.Image;
+  private bigBrush: Phaser.GameObjects.Image;
 
   constructor() {
     super({
@@ -32,6 +34,12 @@ export default class extends Phaser.Scene {
     this.add.tileSprite(w / 2, h / 2, 1920, 1080, "field");
 
     this.surface = this.add.renderTexture(0, 0, w, h);
+    this.standardBrush = this.add.image(100, 100, 'brushStandard').setVisible(false).setOrigin(0.5,0.5);
+    this.bigBrush = this.add.image(100, 100, 'brushBig').setVisible(false).setOrigin(0.5,0.5);
+
+
+
+
     this.anims.create({
       key: "walk",
       frames: this.anims.generateFrameNumbers("character", {}),
@@ -95,6 +103,7 @@ export default class extends Phaser.Scene {
         drawPlayerBrush(this, this.character);
 
         this.physics.world.wrap(this.character, 32);
+
 
         // emit player movement
         var x = this.character.x;
