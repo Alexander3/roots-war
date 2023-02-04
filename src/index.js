@@ -1,12 +1,14 @@
 import Phaser from "phaser";
 import BootScene from "./scenes/Boot";
 import MenuScene from "./scenes/Menu";
+import { calculate_scores } from "../domain";
+import { HEIGHT, WIDTH } from "../constants";
 
 const config = {
     type: Phaser.AUTO,
     parent: "phaser-example",
-    width: 1920,
-    height: 1080,
+    width: WIDTH,
+    height: HEIGHT,
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -17,10 +19,16 @@ const config = {
         MenuScene
     ],
 };
+let lastCalc = 0;
 
 class MyGame extends Phaser.Game {
     step(time, delta) {
         super.step(time, delta);
+
+        if (time > 2000 && Math.round(time / 3000) > lastCalc) {
+            calculate_scores(this.canvas);
+            lastCalc += 1;
+        }
     }
 }
 
