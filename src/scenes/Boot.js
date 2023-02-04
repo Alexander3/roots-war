@@ -88,7 +88,7 @@ export default class extends Phaser.Scene {
         });
 
 
-        // dummy loading 
+        // dummy loading
         for (var i = 0; i < 1000; i++) {
             this.load.image('logo' + i, progressBarFilled);
         }
@@ -97,7 +97,7 @@ export default class extends Phaser.Scene {
 
     update() {
         if (this.fontsReady) {
-            this.scene.start('Menu');
+            this.scene.start('Game');
         }
     }
 
