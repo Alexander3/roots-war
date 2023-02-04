@@ -106,7 +106,8 @@ export default class extends Phaser.Scene {
         this.promptText.setText("Waiting for other players!");
       }
     } else if (this.gameStatus === GameStatus.Finished) {
-      this.scene.start("Scores");
+      setTimeout(()=>calculateScores(this.surface, this.allPlayers()),10)
+      this.scene.start("Scores",{players:this.allPlayers()});
     } else {
       if (this.endTime) {
         const timeRemaining = Math.ceil((this.endTime - Date.now()) / 1000);
