@@ -1,9 +1,10 @@
 import brush from "../assets/brush.png";
 import brush2 from "../assets/brush2.png";
-import characterImg from "../assets/character-rotated.png";
+import characterImg from "../assets/vehicle3.png";
 import logoStar from "../assets/star_gold.png";
 import {drawPlayerBrush} from "../brush";
 import {createForServer} from "../gameSocket";
+// import {calculate_scores} from "../domain";
 
 export default class extends Phaser.Scene {
     constructor() {
@@ -18,8 +19,8 @@ export default class extends Phaser.Scene {
         this.load.image("brush", brush);
         this.load.image("brush2", brush2);
         this.load.spritesheet("character", characterImg, {
-            frameWidth: 36,
-            frameHeight: 32,
+            frameWidth: 178,
+            frameHeight: 141,
         });
 
         this.load.image('star', logoStar);
@@ -52,6 +53,7 @@ export default class extends Phaser.Scene {
 
         if (this.character) {
             this.character.player.update();
+            // calculate_scores(this.game.canvas)
             this.character.body.velocity = this.physics.velocityFromAngle(
                 this.character.angle,
                 this.velocity

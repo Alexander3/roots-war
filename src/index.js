@@ -23,7 +23,7 @@ const config = {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
-    backgroundColor: "#4488aa",
+    backgroundColor: "#653c1a",
     scene: [BootScene, MenuScene, GameScene],
 };
 let lastCalc = 0;

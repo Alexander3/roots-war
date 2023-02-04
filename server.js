@@ -8,6 +8,13 @@ var io = require('socket.io')(server, {
     }
 });
 
+const colors = [
+    'red',
+    'blue',
+    'green',
+    'pink'
+]
+
 var players = {};
 var star = {
     x: Math.floor(Math.random() * 700) + 50,
@@ -24,27 +31,14 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
-const getRandomTeam = (total = 3) => {
-    const id = (Math.floor(Math.random() * total));
-    switch (id) {
-        case 0:
-            return {
-                team: 'red'
-            }
-        case 1:
-            return {
-                team: 'blue'
-            }
-        case 2:
-            return {
-                team: 'green'
-            }
-    }
+const getRandomTeam = () => {
+    const id = (Math.floor(Math.random() * colors.length));
+    return colors[id]
 }
 
 const getTeam = () => {
     const team = getRandomTeam();
-    const exists = Object.values(players).find((t) => t.team === team.team)
+    const exists = Object.values(players).find((t) => t.team === team)
     if (exists) {
         return getTeam();
     }
@@ -60,7 +54,7 @@ io.on('connection', function (socket) {
         x: Math.floor(Math.random() * 700) + 50,
         y: Math.floor(Math.random() * 500) + 50,
         playerId: socket.id,
-        ...team
+        team
     };
     // send the players object to the new player
     socket.emit('currentPlayers', players);
