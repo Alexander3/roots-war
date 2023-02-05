@@ -9,6 +9,7 @@ var io = require('socket.io')(server, {
         methods: ["GET", "POST"]
     }
 });
+require('dotenv').config()
 
 const teamNames = ["white", "green", "orange", "pink", "red", "grey"];
 
@@ -26,7 +27,7 @@ var PERK_TYPE = {
     DISRUPTION_NO_SEED: 'disruption-no-seeds'
 }
 
-const GAME_LENGTH = 30000
+const GAME_LENGTH = process.env.GAME_LENGTH || 30000
 
 function drawNewPerk() {
     const perkTypes = Object.values(PERK_TYPE);
@@ -279,6 +280,6 @@ io.on('connection', function (socket) {
     }
 });
 
-server.listen(8081, function () {
+server.listen(process.env.SERVER_PORT || 8081, function () {
     console.log(`Listening on ${server.address().port}`);
 });
