@@ -2,6 +2,7 @@ var express = require('express');
 var _ = require('lodash');
 var app = express();
 var server = require('http').Server(app);
+var playerNamesPool = require('./src/data/names');
 var io = require('socket.io')(server, {
   cors: {
     origin: "*",
@@ -25,7 +26,7 @@ var PERK_TYPE = {
     DISRUPTION_NO_SEED: 'disruption-no-seeds'
 }
 
-const GAME_LENGTH = 300000
+const GAME_LENGTH = 3000
 
 function drawNewPerk() {
   const perkTypes = Object.values(PERK_TYPE);
@@ -59,31 +60,38 @@ const checkGameCanBeStarted = () => {
     return gameStatus !== 'started' && p.filter((p) => !p.ready).length === 0 && p.length > 1;
 }
 
-const changeGameStatus = (status) => {
-    gameStatus = status
-    io.emit('gameStatusChanged', status);
+const changeGameStatus = ({gameStatus, data}) => {
+    io.emit('gameStatusChanged', {gameStatus, data});
 
-    if (status === 'started') {
-    setTimeout(() => {
-      // drop first perk after some time
+    if (gameStatus === 'started') {
+        setTimeout(() => {
+            // drop first perk after some time
             io.emit('perkDrop', perk);
         }, Math.random() * 1000 + 2000)
   }
 }
 
 const stopGame = () => {
-    changeGameStatus('finished')
+    changeGameStatus({
+        gameStatus: 'finished'
+    })
 }
 
 const tryToStartGame = () => {
-  if (checkGameCanBeStarted()) {
-        changeGameStatus('started')
+    if (checkGameCanBeStarted()) {
+        changeGameStatus({
+            gameStatus: 'started',
+            data: {
+                endTime: Date.now() + GAME_LENGTH
+            }
+        })
 
     setTimeout(() => {
       stopGame();
         }, GAME_LENGTH)
   }
 }
+
 
 const initialPositionsPool = [
   {
@@ -127,15 +135,16 @@ function getInitialPlayerPosition() {
 
 io.on('connection', function (socket) {
     const team = getNextTeam();
-  const initialPosition = getInitialPlayerPosition();
-  console.log(initialPosition);
+    const initialPosition = getInitialPlayerPosition();
+    const name = _.sample(playerNamesPool);
     console.log('a user connected: ', socket.id, team);
-  // create a new player and add it to our players object
-  players[socket.id] = {
-    rotation: 0,
-    x: initialPosition.x,
-    y: initialPosition.y,
-    playerId: socket.id,
+    // create a new player and add it to our players object
+    players[socket.id] = {
+        rotation: 0,
+        x: initialPosition.x,
+        y: initialPosition.y,
+        playerId: socket.id,
+        name,
         team
   };
   // send the players object to the new player

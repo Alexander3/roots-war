@@ -4,6 +4,11 @@ import { createForServer, GameStatus } from "../gameSocket";
 import { Player } from "../player";
 import { TEXT_STYLES } from "../constants";
 
+interface IGameStatusData {
+  gameStatus: GameStatus;
+  data: any;
+}
+
 export default class extends Phaser.Scene {
   speed: number;
   surface: Phaser.GameObjects.RenderTexture;
@@ -13,6 +18,7 @@ export default class extends Phaser.Scene {
   spaceKey: Phaser.Input.Keyboard.Key;
   socket: any;
   promptText: Phaser.GameObjects.Text;
+  promptTween:  Phaser.Tweens.Tween;
   perk: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
   otherPlayers: Phaser.Physics.Arcade.Group;
   mainPlayer: Player;
@@ -24,6 +30,7 @@ export default class extends Phaser.Scene {
   endTime: number;
   peacefulMusic: Phaser.Sound.BaseSound;
   titleText: Phaser.GameObjects.Text;
+  playerNameText: Phaser.GameObjects.Text;
 
   constructor() {
     super({
@@ -31,6 +38,7 @@ export default class extends Phaser.Scene {
     });
     this.gameStatus = GameStatus.Waiting;
   }
+
 
   create() {
     createForServer(this);
@@ -75,20 +83,43 @@ export default class extends Phaser.Scene {
     this.promptText = this.make
       .text({
         x: w / 2,
-        y: h - h / 10,
+        y: h / 2 + 100,
         text: "Press spacebar if you are ready to play!",
-        style: TEXT_STYLES.bigTextStyle,
+        style: TEXT_STYLES.mediumTextStyle,
       })
       .setOrigin(0.5, 0.5);
+
+    this.promptTween = this.tweens.add({
+      targets: this.promptText,
+      props: {
+        scale: {
+          value: 1.05,
+          duration: 1000,
+          ease: 'Power1',
+          yoyo: true,
+          repeat: -1
+        },
+      }
+    });
 
     this.titleText = this.make
       .text({
         x: w / 2,
         y: h / 5,
         text: "Siblings in soil",
-        style: TEXT_STYLES.extraLargeTextStyle,
+        style: {
+          ...TEXT_STYLES.extraLargeTextStyle,
+          fill: "#0aafa9",
+          stroke: "#390041",
+        } as any,
       })
       .setOrigin(0.5, 0.5);
+
+    const gradient = this.titleText.context.createLinearGradient(0, 0, 0, this.titleText.height);
+    gradient.addColorStop(0, '#0aafa9');
+    gradient.addColorStop(.3, '#dddddd');
+    gradient.addColorStop(1, '#390041');
+    this.titleText.setFill(gradient);
 
     this.spaceKey = this.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.SPACE
@@ -99,13 +130,36 @@ export default class extends Phaser.Scene {
     // this.worker = new SharedWorker('domain.js');
   }
 
-  changeGameStatus(gameStatus) {
+  onMainPlayerJoined(mainPlayer) {
+    const w = this.game.config.width as number;
+    const h = this.game.config.height as number;
+
+    this.playerNameText = this.make
+      .text({
+        x: w / 2,
+        y: h - h / 2,
+        text: `Hello, ${mainPlayer.playerName}`,
+        style: TEXT_STYLES.bigTextStyle,
+      })
+      .setOrigin(0.5, 0.5);
+  }
+
+  changeGameStatus({ gameStatus, data }) {
+    const w = this.game.config.width as number;
+    const h = this.game.config.height as number;
+
     this.gameStatus = gameStatus;
+
     if (gameStatus === GameStatus.Start) {
       this.tutorial.destroy();
       this.promptText.destroy();
       this.titleText.destroy();
-      this.endTime = Date.now() + 60000;
+      this.playerNameText
+        .setOrigin(1, 0.5)
+        .setText(this.mainPlayer.playerName)
+        .setPosition(w - 10, 60)
+        .setTint(this.mainPlayer.brushColor);
+      this.endTime = data.endTime || Date.now() + 6000;
       this.mainPlayer.startGame(this);
       this.allPlayers().forEach((player) => {
         player.setVisible(true);
@@ -118,14 +172,26 @@ export default class extends Phaser.Scene {
       if (this.spaceKey.isDown) {
         this.socket.emit("playerReady");
         this.promptText.setText("Waiting for other players!");
+        this.promptTween.stop();
       }
     } else if (this.gameStatus === GameStatus.Finished) {
-      setTimeout(() => calculateScores(this.surface, this.allPlayers()), 10);
-      this.scene.start("Scores", { players: this.allPlayers() });
+      this.surface.snapshot((snapshot) => {
+        this.scene.start("Scores", {
+          players: this.allPlayers().map((player) => ({
+            playerId: player.playerId,
+            playerName: player.playerName,
+            brushColorObj: player.brushColorObj,
+          })),
+          surfaceSnapshot: snapshot,
+        });
+      });
+
+      // setTimeout(() => calculateScores(this.surface, this.allPlayers()), 10)
     } else {
       if (this.endTime) {
         const timeRemaining = Math.ceil((this.endTime - Date.now()) / 1000);
-        this.timeText.text = timeRemaining + " seconds remaining";
+        this.timeText.text =
+          timeRemaining >= 0 ? `${timeRemaining} seconds remaining` : "";
       }
 
       if (this.cursors.left.isDown) {

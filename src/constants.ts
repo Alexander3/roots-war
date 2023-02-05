@@ -7,7 +7,7 @@ export const SCALE = 0.5;
 
 export const TEXT_STYLES = {
     buttonTextStyle: {
-        font: '52px Baloo Da',
+        font: '52px Floral',
         fontWeight: 'bold',
         fill: '#ffffff',
         align: 'center',
@@ -15,7 +15,7 @@ export const TEXT_STYLES = {
         strokeThickness: 10
     },
     textStyle: {
-        font: '26px Baloo Da',
+        font: '26px Floral',
         fontWeight: 'bold',
         style: 'italic',
         fill: '#ffffff',
@@ -24,7 +24,7 @@ export const TEXT_STYLES = {
         strokeThickness: 5
     },
     mediumTextStyle: {
-        font: '38px Baloo Da',
+        font: '38px Floral',
         fontWeight: 'bold',
         style: 'italic',
         fill: '#ffffff',
@@ -33,7 +33,7 @@ export const TEXT_STYLES = {
         strokeThickness: 5
     },
     bigTextStyle: {
-        font: '68px Baloo Da',
+        font: '68px Floral',
         fontWeight: 'bold',
         style: 'italic',
         fill: '#ffffff',
@@ -42,7 +42,7 @@ export const TEXT_STYLES = {
         strokeThickness: 10
     },
     largeTextStyle: {
-        font: '100px Baloo Da',
+        font: '100px Floral',
         fontWeight: 'bold',
         style: 'italic',
         fill: '#BA741B',
@@ -51,7 +51,7 @@ export const TEXT_STYLES = {
         strokeThickness: 15
     },
     extraLargeTextStyle: {
-        font: '180px Baloo Da',
+        font: '180px Floral',
         fontWeight: 'bold',
         style: 'italic',
         fill: '#fff',

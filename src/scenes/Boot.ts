@@ -16,7 +16,7 @@ import disruptionFreeze from "../assets/images/perks/disruption-freeze.png";
 import fieldImage from "../assets/images/field.png";
 import tutorialImage from "../assets/images/background.png";
 import peacefulMusic from "../assets/sounds/peacful-music.mp3";
-import rootsBg from "../assets/images/roots_scores_bg.png";
+import resultsBackgroundImage from "../assets/images/results-background.png";
 
 const vehicles = [
     vehicleImg1,
@@ -48,8 +48,8 @@ export default class extends Phaser.Scene {
                 families: ['Baloo Da']
             },
             custom: {
-                families: ['severinaregular'],
-                urls: ['./src/assets/fonts/chlorinar/stylesheet.css', './src/assets/fonts/severina/stylesheet.css']
+                families: ['Leaves', 'Floral'],
+                urls: ['./src/assets/fonts/leaves/stylesheet.css', './src/assets/fonts/floral/stylesheet.css']
             },
             active: this.fontsLoaded
         });
@@ -114,7 +114,7 @@ export default class extends Phaser.Scene {
         this.load.image('disruption-freeze', disruptionFreeze);
         this.load.image('field', fieldImage);
         this.load.image('tutorial', tutorialImage);
-        this.load.image('rootsBg', rootsBg);
+        this.load.image('results-background', resultsBackgroundImage);
 
         this.load.audio('peaceful-music', peacefulMusic);
 
