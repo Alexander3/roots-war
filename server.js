@@ -91,8 +91,8 @@ const changeGameStatus = ({gameStatus, data}) => {
 const stopGame = () => {
     endTime = null;
     clearTimeout(gameTimeout);
-    Object.keys(players).forEach(() => {
-        players[socket.id].ready = false;
+    Object.keys(players).forEach((p) => {
+        players[p].ready = false;
     })
     changeGameStatus({
         gameStatus: 'finished'
