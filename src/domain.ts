@@ -3,7 +3,7 @@ import chroma from "chroma-js";
 var canvas = document.createElement("canvas");
 
 const DELTA_E_EPS = 50;
-
+const scale=0.2
 export function calculateScores(snap, players) {
   const scores = players.reduce(
     (acc, player) => ({
@@ -13,13 +13,16 @@ export function calculateScores(snap, players) {
     {}
   );
 
-  const ctx = canvas.getContext("2d", { willReadFrequently: true });
-  ctx.canvas.width = 1920;
-  ctx.canvas.height = 1080;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true }) as CanvasRenderingContext2D;
+  const w=snap.width * scale
+  const h=snap.height * scale
+
+  ctx.canvas.width = w;
+  ctx.canvas.height = h;
   ctx.fillStyle = "transparent";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(snap, 0, 0);
-  const pixels = ctx.getImageData(0, 0, 1920, 1080).data;
+  ctx.fillRect(0, 0, w, h);
+  ctx.drawImage(snap, 0, 0,w,h);
+  const pixels = ctx.getImageData(0, 0, w, h).data;
 
   for (let x = 0; x < pixels.length; x += 4) {
     const r = pixels[x];
