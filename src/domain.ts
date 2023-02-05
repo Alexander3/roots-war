@@ -2,9 +2,10 @@ import chroma from "chroma-js";
 
 var canvas = document.createElement("canvas");
 
-const DELTA_E_EPS = 40;
+const DELTA_E_EPS = 29;
 const scale=0.2
-export function calculateScores(snap, players) {
+export function calculateScores(snap, players :string[]) {
+  players=players.sort((a,b)=>a.playerId.localeCompare(b.playerId))
   // document.body.append(snap)
   const scores = players.reduce(
     (acc, player) => ({

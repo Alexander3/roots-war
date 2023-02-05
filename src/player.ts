@@ -100,43 +100,76 @@ export const invertRB = (colour) => {
   return parseInt([b, g, r].join(""), 16);
 };
 
+const colorOptions = ['#d763a9', '#0000ff',
+ '#00f8ff',
+  '#97ff00',
+  '#796f00', '#ff6f00',
+  '#ff0000'].map(c=>chroma(c).num())
+
 const getPlayerColors = ({ team }) => {
   switch (team) {
     case "white":
       return {
         vehicle: "vehicle2",
         teamColor: 0xffffff,
-        brushColor: 0xffffff,
+        brushColor: colorOptions[0],
       };
     case "green":
       return {
         vehicle: "vehicle3",
         teamColor: 0x00ff00,
-        brushColor: 0xcdffdd,
+        brushColor: colorOptions[1],
       };
     case "orange":
       return {
         vehicle: "vehicle1",
         teamColor: 0xffe0ac,
-        brushColor: 0xffe0ac,
+        brushColor: colorOptions[2],
       };
     case "pink":
       return {
         vehicle: "vehicle4",
         teamColor: 0x6c12a3,
-        brushColor: 0xdbb0ef,
+        brushColor: colorOptions[3],
       };
     case "red":
       return {
         vehicle: "vehicle5",
         teamColor: 0xff0000,
-        brushColor: 0xff0000,
+        brushColor: colorOptions[4],
       };
     case "grey":
       return {
         vehicle: "vehicle6",
         teamColor: 0xcccccc,
-        brushColor: 0xcccccc,
+        brushColor: colorOptions[5],
       };
   }
 };
+
+//Generating colors
+// '#000083', '0x003caa', '0x05ffff', '0xffff00', '0xfa0000', '0x800000'
+//
+// const teamNames = ["white", "green", "orange", "pink", "red", "grey"];
+// const colors = teamNames.map(t=>getPlayerColors({team:t}).brushColor)
+// colors.forEach(c=>{
+//   colors.forEach(c2=>{
+//     if (c!=c2){
+//       const c11=chroma(c)
+//       const c12=chroma(c2)
+//       const dis = chroma.deltaE(c11, c12)
+//       if (dis < 40) {
+//         console.log(`%c ${c11.hex()}`, `color: ${c11.hex()}`);
+//         console.log(`%c ${c12.hex()}, ${dis}`, `color: ${c12.hex()}`);
+//       }
+//     }
+//   })
+//
+// })
+// let colors2 = colormap({
+//     colormap: 'rainbow',
+//     nshades: 9,
+//     format: 'hex',
+//     alpha: 1
+// })
+// console.log(colors2)
