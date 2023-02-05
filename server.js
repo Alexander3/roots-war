@@ -12,6 +12,7 @@ var io = require('socket.io')(server, {
 require('dotenv').config()
 
 const teamNames = ["white", "green", "orange", "pink", "red", "grey"];
+let endTime
 
 var GAME_WIDTH = 1920;
 var GAME_HEIGHT = 1080;
@@ -87,6 +88,7 @@ const changeGameStatus = ({gameStatus, data}) => {
 }
 
 const stopGame = () => {
+    endTime = null;
     changeGameStatus({
         gameStatus: 'finished'
     })
@@ -94,10 +96,13 @@ const stopGame = () => {
 
 const tryToStartGame = () => {
     if (checkGameCanBeStarted()) {
+        if (!endTime) {
+            endTime = Date.now() + GAME_LENGTH
+        }
         changeGameStatus({
             gameStatus: 'started',
             data: {
-                endTime: Date.now() + GAME_LENGTH
+                endTime
             }
         })
 
