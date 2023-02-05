@@ -34,11 +34,17 @@ export function createForServer(self: Game) {
                 addOtherPlayer(self, players[id]);
             }
         });
+
+        const amountOfReadyPlayers = self.allPlayers().filter(player => player.playerReady).length ?? 0;
+        self.onPlayersCountUpdate(amountOfReadyPlayers, self.allPlayers().length);
     });
 
     // ADDING NEW PLAYER WHEN ALREADY PLAYING AS ONE
     self.socket.on("newPlayer", function (playerInfo) {
         addOtherPlayer(self, playerInfo);
+
+        const amountOfReadyPlayers = self.allPlayers().filter(player => player.playerReady).length ?? 0;
+        self.onPlayersCountUpdate(amountOfReadyPlayers, self.allPlayers().length);
     });
 
 
@@ -49,6 +55,9 @@ export function createForServer(self: Game) {
                 otherPlayer.destroy();
             }
         });
+
+        const amountOfReadyPlayers = self.allPlayers().filter(player => player.playerReady).length ?? 0;
+        self.onPlayersCountUpdate(amountOfReadyPlayers, self.allPlayers().length);
     });
 
     // RECEIVING INFO ABOUT MOVEMENT OF OTHER PLAYERS
@@ -177,7 +186,7 @@ export function createForServer(self: Game) {
             }
         })
         const amountOfReadyPlayers = self.allPlayers().filter(player => player.playerReady).length ?? 0;
-        self.onSomePlayerReady(amountOfReadyPlayers);
+        self.onSomePlayerReady(amountOfReadyPlayers,self.allPlayers().length);
     });
 
     // CREATING INPUT CONTROLS FOR CURRENT PLAYER
