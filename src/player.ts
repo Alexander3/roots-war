@@ -10,7 +10,7 @@ const colors = colormap({
   format: "hex",
   alpha: 1,
 });
-const DEFAULT_SPEED = 240;
+export const DEFAULT_SPEED = 240;
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
   color: any;
@@ -28,6 +28,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   oldPosition: { x: number; y: number; rotation: number };
   spriteName: string;
   playerReady: boolean = false;
+  paintCounter: number = 0;
 
   constructor(game: Game, playerInfo) {
     const {
@@ -61,6 +62,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.speed = DEFAULT_SPEED;
     this.collisionPossible = true;
     this.spriteName = spriteName;
+    this.paintCounter = 0;
   }
 
   update() {}

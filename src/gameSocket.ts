@@ -2,7 +2,7 @@ import * as io from "socket.io-client";
 
 import {addCurrentPlayer, addOtherPlayer} from "./players";
 import {drawPlayerBrush} from "./brush";
-import {Player} from "./player";
+import {DEFAULT_SPEED, Player} from "./player";
 import Game from "./scenes/Game";
 
 export enum GameStatus {
@@ -117,7 +117,7 @@ export function createForServer(self: Game) {
 
         self.allPlayers().forEach((player) => {
             if (player.playerId === playerId) {
-                player.speed *= 2;
+                player.speed = 2 * DEFAULT_SPEED;
             }
         })
     });
