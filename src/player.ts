@@ -10,7 +10,7 @@ const colors = colormap({
   format: "hex",
   alpha: 1,
 });
-const DEFAULT_SPEED = 240;
+const DEFAULT_SPEED = 240*30;
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
   color: any;
