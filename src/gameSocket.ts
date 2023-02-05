@@ -22,6 +22,16 @@ export function createForServer(self: Game) {
     }
 
     // ADDING EXISTING PLAYERS WHEN JOINING AS NEW PLAYER
+    self.socket.on("disconnectPlayer", function (playerId) {
+        self.otherPlayers.getChildren().forEach(function (otherPlayer: Player) {
+            if (playerId === otherPlayer.playerId) {
+                otherPlayer.destroy();
+            }
+        });
+        displayAmountOfReadyPlayers();
+    });
+
+    // ADDING EXISTING PLAYERS WHEN JOINING AS NEW PLAYER
     self.socket.on("currentPlayers", function (players: Player[]) {
         const [_, currentPlayerInfo] = Object.entries(players).find(([playerId, playerInfo]) => {
             return playerId === self.socket.id
@@ -35,9 +45,13 @@ export function createForServer(self: Game) {
             }
         });
 
+        displayAmountOfReadyPlayers();
+    });
+
+    function displayAmountOfReadyPlayers() {
         const amountOfReadyPlayers = self.allPlayers().filter(player => player.playerReady).length ?? 0;
         self.onPlayersCountUpdate(amountOfReadyPlayers, self.allPlayers().length);
-    });
+    }
 
     // ADDING NEW PLAYER WHEN ALREADY PLAYING AS ONE
     self.socket.on("newPlayer", function (playerInfo) {
@@ -49,15 +63,11 @@ export function createForServer(self: Game) {
 
 
     // REMOVING PLAYER THAT DISCONNECTED
-    self.socket.on("disconnect", function (playerId) {
+    self.socket.on("disconnect", function () {
         self.otherPlayers.getChildren().forEach(function (otherPlayer: Player) {
-            if (playerId === otherPlayer.playerId) {
-                otherPlayer.destroy();
-            }
+            otherPlayer.destroy();
         });
-
-        const amountOfReadyPlayers = self.allPlayers().filter(player => player.playerReady).length ?? 0;
-        self.onPlayersCountUpdate(amountOfReadyPlayers, self.allPlayers().length);
+        displayAmountOfReadyPlayers();
     });
 
     // RECEIVING INFO ABOUT MOVEMENT OF OTHER PLAYERS
@@ -86,9 +96,6 @@ export function createForServer(self: Game) {
     // RECEIVING INFO WHEN GAME CAN BE STARTED
     self.socket.on("gameStatusChanged", function (data) {
         self.changeGameStatus(data)
-        if (self.gameStatus === GameStatus.Finished) {
-            disconnectWithServer(self);
-        }
     });
 
     // RECEIVING INFO ABOUT BIG BRUSH DEACTIVATION
