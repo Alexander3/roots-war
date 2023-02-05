@@ -210,7 +210,7 @@ export default class extends Phaser.Scene {
     }
   }
 
-  update(time) {
+  update(time,delta) {
     if (this.gameStatus === GameStatus.Waiting) {
       if (this.spaceKey.isDown && !this.mainPlayer.playerReady) {
         this.socket.emit("playerReady");
@@ -240,7 +240,7 @@ export default class extends Phaser.Scene {
         // }
         const velocity = this.physics.velocityFromAngle(
           this.mainPlayer.angle,
-          this.mainPlayer.speed
+          this.mainPlayer.speed/delta
         );
 
         this.mainPlayer.setVelocity(velocity.x, velocity.y);
