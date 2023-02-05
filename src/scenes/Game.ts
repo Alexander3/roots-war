@@ -50,29 +50,32 @@ export default class extends Phaser.Scene {
 
     this.surface = this.add.renderTexture(0, 0, w, h);
 
-    // this.standardBrush = this.add.image(100, 100, 'brushStandard').setVisible(false).setOrigin(0.5,0.5);
-    this.bigBrush = this.add
-      .image(100, 100, "brushBig")
-      .setVisible(false)
-      .setOrigin(0.5, 0.5);
-
-    const config = {
+    this.anims.create({
       key: "move",
-      frames: this.anims.generateFrameNumbers("brushStandardSheet", {
-        start: 0,
-        end: 4,
-        first: 0,
-      }),
-      frameRate: 5,
+      frames: this.anims.generateFrameNumbers("rootStandardSheet", {}),
+      frameRate: 60,
       repeat: -1,
-    };
+    });
 
-    this.anims.create(config);
     this.standardBrush = this.add
-      .sprite(100, 100, "brushStandardSheet")
+      .sprite(100, 100, "rootStandardSheet")
       .setVisible(false)
       .setOrigin(0.5, 0.5)
       .play("move");
+
+    this.anims.create({
+      key: "moveBig",
+      frames: this.anims.generateFrameNumbers("rootBigSheet", {}),
+      frameRate: 60,
+      repeat: -1,
+    });
+
+    this.bigBrush = this.add
+      .sprite(100, 100, "rootBigSheet")
+      .setVisible(false)
+      .setOrigin(0.5, 0.5)
+      .play("moveBig");
+
     this.timeText = this.add.text(w / 2, h - 30, "", TEXT_STYLES.textStyle);
     this.timeText.setOrigin(0.5, 0.5);
 

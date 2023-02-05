@@ -10,7 +10,7 @@ const colors = colormap({
   format: "hex",
   alpha: 1,
 });
-const DEFAULT_SPEED = 300;
+const DEFAULT_SPEED = 240;
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
   color: any;
@@ -30,11 +30,15 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   playerReady: boolean = false;
 
   constructor(game: Game, playerInfo) {
-    const {teamColor, brushColor, vehicle: spriteName} = getPlayerColors(playerInfo);
+    const {
+      teamColor,
+      brushColor,
+      vehicle: spriteName,
+    } = getPlayerColors(playerInfo);
     super(game, playerInfo.x, playerInfo.y, spriteName);
 
     game.physics.add.existing(this, false);
-    game.add.existing(this)
+    game.add.existing(this);
 
     this.setOrigin(0.5, 0.5).setDisplaySize(90, 70);
 
@@ -59,14 +63,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.spriteName = spriteName;
   }
 
-  update() {
-  }
+  update() {}
 
   startGame(game: Game) {
-    const velocity = game.physics.velocityFromAngle(
-        this.angle,
-        game.speed
-    )
+    const velocity = game.physics.velocityFromAngle(this.angle, game.speed);
     this.setVisible(true);
     this.setVelocity(velocity.x, velocity.y);
   }
@@ -102,40 +102,41 @@ export const invertRB = (colour) => {
 
 const getPlayerColors = ({ team }) => {
   switch (team) {
-    case "orange":
-      return {
-        vehicle: 'vehicle1',
-        teamColor: 0xff0000,
-        brushColor: invertRB(0xeba534),
-      };
     case "white":
       return {
-        vehicle: 'vehicle2',
+        vehicle: "vehicle2",
         teamColor: 0xffffff,
-        brushColor: invertRB(0xffffff),
+        brushColor: 0xffffff,
       };
     case "green":
       return {
-        vehicle: 'vehicle3',
+        vehicle: "vehicle3",
         teamColor: 0x00ff00,
-        brushColor: invertRB(0x199147),
+        brushColor: 0xcdffdd,
+      };
+    case "orange":
+      return {
+        vehicle: "vehicle1",
+        teamColor: 0xffe0ac,
+        brushColor: 0xffe0ac,
       };
     case "pink":
       return {
-        vehicle: 'vehicle4',
+        vehicle: "vehicle4",
         teamColor: 0x6c12a3,
-        brushColor: invertRB(0xdbb0ef),
+        brushColor: 0xdbb0ef,
       };
     case "red":
       return {
-        vehicle: 'vehicle5',
+        vehicle: "vehicle5",
         teamColor: 0xff0000,
-        brushColor: invertRB(0xff0000),
+        brushColor: 0xff0000,
+      };
+    case "grey":
+      return {
+        vehicle: "vehicle6",
+        teamColor: 0xcccccc,
+        brushColor: 0xcccccc,
       };
   }
-  return {
-    teamColor: 0x000000,
-    brushColor: 0x00000,
-    vehicle: 'vehicle6'
-  };
 };

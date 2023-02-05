@@ -1,8 +1,7 @@
 import Phaser from 'phaser'
 import WebFont from 'webfontloader'
-import brushStandard from "../assets/brushStandard.png";
-import brushStandardSheet from "../assets/brushStandardSheet2.png";
-import brushBig from "../assets/brushBig.png";
+import rootStandardSheet from "../assets/images/root.png";
+import rootBigSheet from "../assets/images/rootBig.png";
 import vehicleImg1 from "../assets/vehicle1.png";
 import vehicleImg2 from "../assets/vehicle2.png";
 import vehicleImg3 from "../assets/vehicle3.png";
@@ -100,10 +99,8 @@ export default class extends Phaser.Scene {
             }, 400)
         });
 
-
-        this.load.image("brushStandard", brushStandard);
-        this.load.spritesheet("brushStandardSheet", brushStandardSheet,{frameHeight:32, frameWidth:32});
-        this.load.image("brushBig", brushBig);
+        this.load.spritesheet("rootStandardSheet", rootStandardSheet, {frameWidth: 6, frameHeight: 176});
+        this.load.spritesheet("rootBigSheet", rootBigSheet, {frameWidth: 6, frameHeight: 264});
         for (let a = 0; a < vehicles.length; a++) {
             this.load.spritesheet(`vehicle${a + 1}`, vehicles[a], {
                 frameWidth: 178,
