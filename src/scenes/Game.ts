@@ -97,6 +97,12 @@ export default class extends Phaser.Scene {
       })
       .setOrigin(0.5, 0.5);
 
+    const gradient = this.titleText.context.createLinearGradient(0, 0, 0, this.titleText.height);
+    gradient.addColorStop(0, '#0aafa9');
+    gradient.addColorStop(.3, '#dddddd');
+    gradient.addColorStop(1, '#390041');
+    this.titleText.setFill(gradient);
+
     this.spaceKey = this.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.SPACE
     );

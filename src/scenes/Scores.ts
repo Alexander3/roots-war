@@ -36,6 +36,12 @@ export default class extends Phaser.Scene {
       } as any)
       .setOrigin(0.5, 0.5);
 
+    const gradient = this.titleText.context.createLinearGradient(0, 0, 0, this.titleText.height);
+    gradient.addColorStop(0, '#0aafa9');
+    gradient.addColorStop(.3, '#dddddd');
+    gradient.addColorStop(1, '#390041');
+    this.titleText.setFill(gradient);
+
     setTimeout(() => {
       const results: { [playerId: string]: number } = calculateScores(
         this.surfaceSnapshot,
