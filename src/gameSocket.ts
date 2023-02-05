@@ -100,6 +100,8 @@ export function createForServer(self: Game) {
 
     // RECEIVING INFO ABOUT BIG BRUSH DEACTIVATION
     self.socket.on("bigBrushDeactivated", function (playerId) {
+        self.waterDropSound.play();
+
         self.allPlayers().forEach((player) => {
             if (player.playerId === playerId) {
                 player.hasBigBrush = false;
@@ -109,6 +111,8 @@ export function createForServer(self: Game) {
 
     // RECEIVING INFO ABOUT SHOE ACTIVATION
     self.socket.on("shoeActivated", function (playerId) {
+        self.fastSound.play();
+
         self.allPlayers().forEach((player) => {
             if (player.playerId === playerId) {
                 player.speed *= 2;
@@ -127,6 +131,8 @@ export function createForServer(self: Game) {
 
     // RECEIVING INFO ABOUT CLOCK ACTIVATION
     self.socket.on("clockActivated", function (playerId) {
+        self.freezeSound.play();
+
         self.allPlayers().forEach((player) => {
             if (player.playerId !== playerId) {
                 player.speed = 0;
@@ -163,6 +169,8 @@ export function createForServer(self: Game) {
 
     // RECEIVING INFO ABOUT COLLISION BETWEEN TWO PLAYERS
     self.socket.on("playerCollided", function ({player1, player2}) {
+        self.rockSound.play();
+
         self.allPlayers().forEach((player) => {
             if (player.playerId === player1 || player.playerId === player2) {
                 player.angle += 120;
