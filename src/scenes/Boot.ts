@@ -16,6 +16,10 @@ import disruptionFreeze from "../assets/images/perks/disruption-freeze.png";
 import fieldImage from "../assets/images/field.png";
 import tutorialImage from "../assets/images/background.png";
 import peacefulMusic from "../assets/sounds/peacful-music.mp3";
+import freezeSound from "../assets/sounds/freeze.mp3";
+import fastSound from "../assets/sounds/fast.mp3";
+import waterDropSound from "../assets/sounds/water-drop.mp3";
+import rockSound from "../assets/sounds/rock.mp3";
 import resultsBackgroundImage from "../assets/images/results-background.png";
 
 const vehicles = [
@@ -117,6 +121,10 @@ export default class extends Phaser.Scene {
         this.load.image('results-background', resultsBackgroundImage);
 
         this.load.audio('peaceful-music', peacefulMusic);
+        this.load.audio('freeze-sound', freezeSound);
+        this.load.audio('fast-sound', fastSound);
+        this.load.audio('water-drop-sound', waterDropSound);
+        this.load.audio('rock-sound', rockSound);
 
         this.load.start();
     }

@@ -28,6 +28,10 @@ export default class extends Phaser.Scene {
   timeText: Phaser.GameObjects.Text;
   endTime: number;
   peacefulMusic: Phaser.Sound.BaseSound;
+  freezeSound: Phaser.Sound.BaseSound;
+  fastSound: Phaser.Sound.BaseSound;
+  waterDropSound: Phaser.Sound.BaseSound;
+  rockSound: Phaser.Sound.BaseSound;
   titleText: Phaser.GameObjects.Text;
   playerNameText: Phaser.GameObjects.Text;
   readyPlayersText: Phaser.GameObjects.Text;
@@ -145,6 +149,10 @@ export default class extends Phaser.Scene {
     );
 
     this.peacefulMusic = this.sound.add("peaceful-music");
+    this.freezeSound = this.sound.add("freeze-sound");
+    this.fastSound = this.sound.add("fast-sound");
+    this.waterDropSound = this.sound.add("water-drop-sound");
+    this.rockSound = this.sound.add("rock-sound");
     this.peacefulMusic.play();
   }
 
