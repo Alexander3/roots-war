@@ -185,7 +185,7 @@ io.on('connection', function (socket) {
         delete players[socket.id];
         // emit a message to all players to remove this player
         socket.disconnect(socket.id);
-        if (Object.values(players).length <= 1) {
+        if (Object.values(players).length <= 1 && gameStatus !== 'waiting') {
             stopGame();
         }
     });
