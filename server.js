@@ -2,7 +2,7 @@ var express = require('express');
 var _ = require('lodash');
 var app = express();
 var server = require('http').Server(app);
-var playerNamesPool = require('./src/data/names');
+var {names, adjectives} = require('./src/data/names');
 var io = require('socket.io')(server, {
     cors: {
         origin: "*",
@@ -153,7 +153,7 @@ io.on('connection', function (socket) {
     }
     const team = getTeam();
     const initialPosition = getInitialPlayerPosition();
-    const name = _.sample(playerNamesPool);
+    const name = `${_.sample(adjectives)} ${_.sample(names)}`;
     console.log('a user connected: ', socket.id, team);
     // create a new player and add it to our players object
     players[socket.id] = {
