@@ -148,6 +148,9 @@ function getInitialPlayerPosition() {
 }
 
 io.on('connection', function (socket) {
+    if (gameStatus === 'started') {
+        return false;
+    }
     const team = getTeam();
     const initialPosition = getInitialPlayerPosition();
     const name = _.sample(playerNamesPool);
