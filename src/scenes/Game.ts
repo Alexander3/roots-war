@@ -5,8 +5,8 @@ import { Player } from "../player";
 import { TEXT_STYLES } from "../constants";
 
 interface IGameStatusData {
-    gameStatus: GameStatus;
-    data: any
+  gameStatus: GameStatus;
+  data: any;
 }
 
 export default class extends Phaser.Scene {
@@ -78,9 +78,9 @@ export default class extends Phaser.Scene {
     this.promptText = this.make
       .text({
         x: w / 2,
-        y: h - h / 10,
+        y: h / 2 + 100,
         text: "Press spacebar if you are ready to play!",
-        style: TEXT_STYLES.bigTextStyle,
+        style: TEXT_STYLES.mediumTextStyle,
       })
       .setOrigin(0.5, 0.5);
 
@@ -89,7 +89,11 @@ export default class extends Phaser.Scene {
         x: w / 2,
         y: h / 5,
         text: "Siblings in soil",
-        style: TEXT_STYLES.extraLargeTextStyle,
+        style: {
+          ...TEXT_STYLES.extraLargeTextStyle,
+          fill: "#0aafa9",
+          stroke: "#390041",
+        } as any,
       })
       .setOrigin(0.5, 0.5);
 
@@ -103,22 +107,22 @@ export default class extends Phaser.Scene {
   }
 
   onMainPlayerJoined(mainPlayer) {
-      const w = this.game.config.width as number;
-      const h = this.game.config.height as number;
+    const w = this.game.config.width as number;
+    const h = this.game.config.height as number;
 
-      this.playerNameText = this.make
-          .text({
-              x: w / 2,
-              y: h - h / 2,
-              text: `Hello, ${mainPlayer.playerName}`,
-              style: TEXT_STYLES.bigTextStyle,
-          })
-          .setOrigin(0.5, 0.5);
+    this.playerNameText = this.make
+      .text({
+        x: w / 2,
+        y: h - h / 2,
+        text: `Hello, ${mainPlayer.playerName}`,
+        style: TEXT_STYLES.bigTextStyle,
+      })
+      .setOrigin(0.5, 0.5);
   }
 
-  changeGameStatus({gameStatus, data}) {
-      const w = this.game.config.width as number;
-      const h = this.game.config.height as number;
+  changeGameStatus({ gameStatus, data }) {
+    const w = this.game.config.width as number;
+    const h = this.game.config.height as number;
 
     this.gameStatus = gameStatus;
 
@@ -126,7 +130,11 @@ export default class extends Phaser.Scene {
       this.tutorial.destroy();
       this.promptText.destroy();
       this.titleText.destroy();
-      this.playerNameText.setOrigin(1, 0.5).setText(this.mainPlayer.playerName).setPosition(w - 10, 40)
+      this.playerNameText
+        .setOrigin(1, 0.5)
+        .setText(this.mainPlayer.playerName)
+        .setPosition(w - 10, 60)
+        .setTint(this.mainPlayer.brushColor);
       this.endTime = data.endTime || Date.now() + 6000;
       this.mainPlayer.startGame(this);
       this.allPlayers().forEach((player) => {
@@ -135,76 +143,77 @@ export default class extends Phaser.Scene {
     }
   }
 
-    update(time) {
-        if (this.gameStatus === GameStatus.Waiting) {
-            if (this.spaceKey.isDown) {
-                this.socket.emit("playerReady");
-                this.promptText.setText("Waiting for other players!");
-            }
-        } else if (this.gameStatus === GameStatus.Finished) {
-            this.surface.snapshot((snapshot) => {
-                this.scene.start("Scores", {
-                    players: this.allPlayers().map(player => ({
-                        playerId: player.playerId,
-                        playerName: player.playerName,
-                        brushColorObj: player.brushColorObj
-                    })),
-                    surfaceSnapshot: snapshot
-                });
-            })
+  update(time) {
+    if (this.gameStatus === GameStatus.Waiting) {
+      if (this.spaceKey.isDown) {
+        this.socket.emit("playerReady");
+        this.promptText.setText("Waiting for other players!");
+      }
+    } else if (this.gameStatus === GameStatus.Finished) {
+      this.surface.snapshot((snapshot) => {
+        this.scene.start("Scores", {
+          players: this.allPlayers().map((player) => ({
+            playerId: player.playerId,
+            playerName: player.playerName,
+            brushColorObj: player.brushColorObj,
+          })),
+          surfaceSnapshot: snapshot,
+        });
+      });
 
-            // setTimeout(() => calculateScores(this.surface, this.allPlayers()), 10)
-        } else {
-            if (this.endTime) {
-                const timeRemaining = Math.ceil((this.endTime - Date.now()) / 1000);
-                this.timeText.text = timeRemaining >= 0 ? `${timeRemaining} seconds remaining` : "";
-            }
+      // setTimeout(() => calculateScores(this.surface, this.allPlayers()), 10)
+    } else {
+      if (this.endTime) {
+        const timeRemaining = Math.ceil((this.endTime - Date.now()) / 1000);
+        this.timeText.text =
+          timeRemaining >= 0 ? `${timeRemaining} seconds remaining` : "";
+      }
 
-            if (this.cursors.left.isDown) {
-                this.mainPlayer.angle -= 4;
-            } else if (this.cursors.right.isDown) {
-                this.mainPlayer.angle += 4;
-            }
+      if (this.cursors.left.isDown) {
+        this.mainPlayer.angle -= 4;
+      } else if (this.cursors.right.isDown) {
+        this.mainPlayer.angle += 4;
+      }
 
-            if (this.mainPlayer) {
-                this.mainPlayer.update();
-                // if (Math.round(time / 2000) % 10 === 0) {
-                //   calculateScores(this.surface, this.allPlayers())
-                // }
-                const velocity = this.physics.velocityFromAngle(
-                    this.mainPlayer.angle,
-                    this.mainPlayer.speed
-                );
+      if (this.mainPlayer) {
+        this.mainPlayer.update();
+        // if (Math.round(time / 2000) % 10 === 0) {
+        //   calculateScores(this.surface, this.allPlayers())
+        // }
+        const velocity = this.physics.velocityFromAngle(
+          this.mainPlayer.angle,
+          this.mainPlayer.speed
+        );
 
-                this.mainPlayer.setVelocity(velocity.x, velocity.y);
-                drawPlayerBrush(this, this.mainPlayer);
+        this.mainPlayer.setVelocity(velocity.x, velocity.y);
+        drawPlayerBrush(this, this.mainPlayer);
 
-                this.physics.world.wrap(this.mainPlayer, 32);
+        this.physics.world.wrap(this.mainPlayer, 32);
 
-                // emit player movement
-                var x = this.mainPlayer.x;
-                var y = this.mainPlayer.y;
-                var r = this.mainPlayer.rotation;
-                if (
-                    this.mainPlayer.oldPosition &&
-                    (x !== this.mainPlayer.oldPosition.x ||
-                        y !== this.mainPlayer.oldPosition.y ||
-                        r !== this.mainPlayer.oldPosition.rotation)
-                ) {
-                    this.socket.emit("playerMovement", {
-                        x,
-                        y,
-                        rotation: r,
-                        hasBigBrush: this.mainPlayer.hasBigBrush,
-                    });
-                }
-                // save old position data
-                this.mainPlayer.oldPosition = {
-                    x: this.mainPlayer.x,
-                    y: this.mainPlayer.y,
-                    rotation: this.mainPlayer.rotation,
-                };
-            }
+        // emit player movement
+        var x = this.mainPlayer.x;
+        var y = this.mainPlayer.y;
+        var r = this.mainPlayer.rotation;
+        if (
+          this.mainPlayer.oldPosition &&
+          (x !== this.mainPlayer.oldPosition.x ||
+            y !== this.mainPlayer.oldPosition.y ||
+            r !== this.mainPlayer.oldPosition.rotation)
+        ) {
+          this.socket.emit("playerMovement", {
+            x,
+            y,
+            rotation: r,
+            hasBigBrush: this.mainPlayer.hasBigBrush,
+          });
         }
+        // save old position data
+        this.mainPlayer.oldPosition = {
+          x: this.mainPlayer.x,
+          y: this.mainPlayer.y,
+          rotation: this.mainPlayer.rotation,
+        };
+      }
     }
+  }
 }

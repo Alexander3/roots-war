@@ -29,16 +29,18 @@ export default class extends Phaser.Scene {
     let i = 0;
 
     this.titleText = this.add
-      .text(
-        w / 2,
-        h / 2 - 100,
-        "Calculating results...",
-        TEXT_STYLES.bigTextStyle
-      )
+      .text(w / 2, h / 2 - 150, "Calculating results...", {
+        ...TEXT_STYLES.largeTextStyle,
+        fill: "#0aafa9",
+        stroke: "#390041",
+      } as any)
       .setOrigin(0.5, 0.5);
 
     setTimeout(() => {
-      const results: {[playerId: string]: number} = calculateScores(this.surfaceSnapshot, this.players);
+      const results: { [playerId: string]: number } = calculateScores(
+        this.surfaceSnapshot,
+        this.players
+      );
 
       console.log("score ready", results);
       this.titleText.setText("Results:");

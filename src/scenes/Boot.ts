@@ -49,8 +49,8 @@ export default class extends Phaser.Scene {
                 families: ['Baloo Da']
             },
             custom: {
-                families: ['severinaregular'],
-                urls: ['./src/assets/fonts/chlorinar/stylesheet.css', './src/assets/fonts/severina/stylesheet.css']
+                families: ['Leaves', 'Floral'],
+                urls: ['./src/assets/fonts/leaves/stylesheet.css', './src/assets/fonts/floral/stylesheet.css']
             },
             active: this.fontsLoaded
         });
