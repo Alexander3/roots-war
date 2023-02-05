@@ -298,7 +298,7 @@ export default class extends Phaser.Scene {
         // }
         const velocity = this.physics.velocityFromAngle(
           this.mainPlayer.angle,
-          this.mainPlayer.speed/delta
+          this.mainPlayer.speed
         );
 
         this.mainPlayer.setVelocity(velocity.x, velocity.y);
