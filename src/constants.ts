@@ -59,4 +59,13 @@ export const TEXT_STYLES = {
         stroke: '#000',
         strokeThickness: 15
     },
+    mobileInstructionTextStyle: {
+        font: '64px Floral',
+        fontWeight: 'bold',
+        style: 'italic',
+        fill: '#fff',
+        align: 'center',
+        stroke: '#000',
+        strokeThickness: 15,
+    },
 }
