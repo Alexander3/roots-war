@@ -202,6 +202,7 @@ export default class extends Phaser.Scene {
             brushColor: player.brushColor
           })),
           surfaceSnapshot: snapshot,
+          game:this
         });
         // disconnectWithServer(this);
       });

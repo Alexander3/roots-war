@@ -180,6 +180,10 @@ io.on('connection', function (socket) {
     // update all other players of the new player
     socket.broadcast.emit('newPlayer', players[socket.id]);
 
+    socket.on('gameRestart', () => {
+        changeGameStatus({gameStatus: 'waiting'})
+    })
+
     // when a player disconnects, remove them from our players object
     socket.on('disconnect', function () {
         console.log('user disconnected: ', socket.id);

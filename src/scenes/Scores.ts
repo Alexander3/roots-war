@@ -1,12 +1,14 @@
 import Phaser from "phaser";
-import { TEXT_STYLES } from "../constants";
-import { calculateScores } from "../domain";
-import chroma from "chroma-js";
+import {TEXT_STYLES} from "../constants";
+import {calculateScores} from "../domain";
+import {GameStatus} from "../gameSocket";
 
 export default class extends Phaser.Scene {
   private players: any[];
   private surfaceSnapshot: any;
   private titleText: Phaser.GameObjects.Text;
+  private spaceKey: Phaser.Input.Keyboard.Key;
+  gameScene:any;
 
   constructor() {
     super({
@@ -18,9 +20,13 @@ export default class extends Phaser.Scene {
     console.log("Scores init()", data);
     this.players = data.players;
     this.surfaceSnapshot = data.surfaceSnapshot;
+    this.gameScene = data.game;
   }
 
   create() {
+    this.spaceKey = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.SPACE
+    );
     const w = this.game.config.width as number;
     const h = this.game.config.height as number;
 
@@ -68,6 +74,14 @@ export default class extends Phaser.Scene {
         i += 1;
       }
     });
+  }
+
+  update() {
+    if (this.gameScene.gameStatus === GameStatus.Finished && this.spaceKey.isDown) {
+      this.gameScene.socket.emit("gameRestart");
+      this.gameScene.gameStatus = GameStatus.Waiting
+      this.scene.start("Game")
+    }
   }
 }
 
