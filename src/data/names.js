@@ -1,4 +1,15 @@
-module.exports = [
+const adjectives = [
+    "Worthy",
+    "Adorable",
+    "Asleep",
+    "Blushing",
+    "Energetic",
+    "Lucky",
+    "Relaxed",
+    "Tender",
+];
+
+const names = [
     "Aaren",
     "Aarika",
     "Abagael",
@@ -4945,4 +4956,9 @@ module.exports = [
     "Zsazsa",
     "Zulema",
     "Zuzana"
-]
+];
+
+module.exports = {
+    names,
+    adjectives
+}

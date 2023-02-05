@@ -1,8 +1,7 @@
-import { drawPlayerBrush } from "../brush";
-import { calculateScores } from "../domain";
-import { createForServer, GameStatus } from "../gameSocket";
-import { Player } from "../player";
-import { TEXT_STYLES } from "../constants";
+import {drawPlayerBrush} from "../brush";
+import {createForServer, disconnectWithServer, GameStatus} from "../gameSocket";
+import {Player} from "../player";
+import {TEXT_STYLES} from "../constants";
 
 interface IGameStatusData {
   gameStatus: GameStatus;
@@ -114,7 +113,16 @@ export default class extends Phaser.Scene {
           stroke: "#390041",
         } as any,
       })
-      .setOrigin(0.5, 0.5);
+        .setOrigin(0.5, 0.5);
+
+    this.playerNameText = this.make
+        .text({
+          x: w / 2,
+          y: h - h / 2,
+          text: ``,
+          style: TEXT_STYLES.bigTextStyle,
+        })
+        .setOrigin(0.5, 0.5);
 
     this.readyPlayersText = this.make
         .text({
@@ -124,6 +132,7 @@ export default class extends Phaser.Scene {
           style: TEXT_STYLES.bigTextStyle,
         })
         .setOrigin(0.5, 0.5);
+
 
     const gradient = this.titleText.context.createLinearGradient(0, 0, 0, this.titleText.height);
     gradient.addColorStop(0, '#0aafa9');
@@ -140,21 +149,18 @@ export default class extends Phaser.Scene {
   }
 
   onMainPlayerJoined(mainPlayer) {
-    const w = this.game.config.width as number;
-    const h = this.game.config.height as number;
-
-    this.playerNameText = this.make
-      .text({
-        x: w / 2,
-        y: h - h / 2,
-        text: `Hello, ${mainPlayer.playerName}`,
-        style: TEXT_STYLES.bigTextStyle,
-      })
-      .setOrigin(0.5, 0.5);
+    this.playerNameText
+        .setText(`Hello, ${mainPlayer.playerName}`)
   }
 
-  onSomePlayerReady(amountOfReadyPlayers = 0) {
-      this.readyPlayersText.setText(`Players ready: ${amountOfReadyPlayers}`)
+  onSomePlayerReady(amountOfReadyPlayers = 0, allPlayersCount = 0) {
+      this.readyPlayersText.setText(`Players ready: ${amountOfReadyPlayers}/${allPlayersCount}`)
+  }
+
+  onPlayersCountUpdate(amountOfReadyPlayers = 0, allPlayersCount = 0) {
+    const text = this.readyPlayersText;
+    const {visible} = text;
+    visible && text.setText(`Players ready: ${amountOfReadyPlayers}/${allPlayersCount}`)
   }
 
   changeGameStatus({ gameStatus, data }) {
@@ -200,6 +206,7 @@ export default class extends Phaser.Scene {
           })),
           surfaceSnapshot: snapshot,
         });
+        disconnectWithServer(this);
       });
 
       // setTimeout(() => calculateScores(this.surface, this.allPlayers()), 10)
