@@ -50,4 +50,13 @@ export const TEXT_STYLES = {
         stroke: '#000',
         strokeThickness: 15
     },
+    extraLargeTextStyle: {
+        font: '180px Baloo Da',
+        fontWeight: 'bold',
+        style: 'italic',
+        fill: '#fff',
+        align: 'center',
+        stroke: '#000',
+        strokeThickness: 15
+    },
 }
