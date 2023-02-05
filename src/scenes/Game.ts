@@ -153,8 +153,12 @@ export default class extends Phaser.Scene {
       .setOrigin(0.5, 0.5);
   }
 
-  onSomePlayerReady(amountOfReadyPlayers = 0) {
-      this.readyPlayersText.setText(`Players ready: ${amountOfReadyPlayers}`)
+  onSomePlayerReady(amountOfReadyPlayers = 0, allPlayersCount = 0) {
+      this.readyPlayersText.setText(`Players ready: ${amountOfReadyPlayers}/${allPlayersCount}`)
+  }
+
+  onPlayersCountUpdate(amountOfReadyPlayers = 0, allPlayersCount = 0) {
+    this.readyPlayersText.setText(`Players ready: ${amountOfReadyPlayers}/${allPlayersCount}`)
   }
 
   changeGameStatus({ gameStatus, data }) {
