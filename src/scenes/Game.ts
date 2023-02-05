@@ -142,8 +142,18 @@ export default class extends Phaser.Scene {
                 this.promptText.setText("Waiting for other players!");
             }
         } else if (this.gameStatus === GameStatus.Finished) {
-            setTimeout(() => calculateScores(this.surface, this.allPlayers()), 10)
-            this.scene.start("Scores", {players: this.allPlayers(), surface: this.surface});
+            this.surface.snapshot((snapshot) => {
+                this.scene.start("Scores", {
+                    players: this.allPlayers().map(player => ({
+                        playerId: player.playerId,
+                        playerName: player.playerName,
+                        brushColorObj: player.brushColorObj
+                    })),
+                    surfaceSnapshot: snapshot
+                });
+            })
+
+            // setTimeout(() => calculateScores(this.surface, this.allPlayers()), 10)
         } else {
             if (this.endTime) {
                 const timeRemaining = Math.ceil((this.endTime - Date.now()) / 1000);

@@ -1,9 +1,11 @@
 import Phaser from "phaser";
 import { Player } from "../player";
 import { TEXT_STYLES } from "../constants";
+import { calculateScores } from "../domain";
 
 export default class extends Phaser.Scene {
-  private players: Player[];
+  private players: any[];
+  private surfaceSnapshot: any;
   private titleText: Phaser.GameObjects.Text;
 
   constructor() {
@@ -15,47 +17,49 @@ export default class extends Phaser.Scene {
   init(data) {
     console.log("Scores init()", data);
     this.players = data.players;
-    const w = this.game.config.width as number;
-    const h = this.game.config.height as number;
-    let i = 0;
-
-
-    document.addEventListener(
-      "score-ready",
-      (e) => {
-        console.log("score ready");
-        this.titleText.setText("Results:");
-
-        const totalPoints = this.players.reduce(
-          (acc, player) => acc + player.points,
-          0
-        );
-
-        for (const player of this.players) {
-          const points = `${player.playerName}: ${fPercent(
-            player.points / totalPoints
-          )}`;
-
-          this.add
-            .text(w / 2, h / 2 + i * 100, points, TEXT_STYLES.bigTextStyle)
-            .setOrigin(0.5, 0.5)
-            .setColor("#" + player.brushColor.toString(16));
-          i += 1;
-        }
-      },
-      false
-    );
+    this.surfaceSnapshot = data.surfaceSnapshot;
   }
 
   create() {
     const w = this.game.config.width as number;
     const h = this.game.config.height as number;
+
     this.add.image(w / 2, h / 2, "results-background");
 
+    let i = 0;
+
     this.titleText = this.add
-        .text(w / 2, h / 2 - 100, "Calculating results...", TEXT_STYLES.bigTextStyle)
-        .setOrigin(0.5, 0.5);
-    // this.add.rectangle(w / 2, h / 2 , 148, 148, 0x5c3506,0.8);
+      .text(
+        w / 2,
+        h / 2 - 100,
+        "Calculating results...",
+        TEXT_STYLES.bigTextStyle
+      )
+      .setOrigin(0.5, 0.5);
+
+    setTimeout(() => {
+      const results: {[playerId: string]: number} = calculateScores(this.surfaceSnapshot, this.players);
+
+      console.log("score ready", results);
+      this.titleText.setText("Results:");
+
+      const totalPaintedPixels = Object.values(results).reduce(
+        (acc, paintedPixelsByPlayer) => acc + paintedPixelsByPlayer,
+        0
+      );
+
+      for (const player of this.players) {
+        const points = `${player.playerName}: ${fPercent(
+          results[player.playerId] / totalPaintedPixels
+        )}`;
+
+        this.add
+          .text(w / 2, h / 2 + i * 100, points, TEXT_STYLES.bigTextStyle)
+          .setOrigin(0.5, 0.5);
+        // .setColor("#" + player.brushColor.toString(16));
+        i += 1;
+      }
+    });
   }
 }
 
