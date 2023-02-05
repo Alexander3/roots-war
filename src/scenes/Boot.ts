@@ -103,8 +103,8 @@ export default class extends Phaser.Scene {
             }, 400)
         });
 
-        this.load.spritesheet("rootStandardSheet", rootStandardSheet, {frameWidth: 9, frameHeight: 64});
-        this.load.spritesheet("rootBigSheet", rootBigSheet, {frameWidth: 9, frameHeight: 96});
+        this.load.spritesheet("rootStandardSheet", rootStandardSheet, {frameWidth: 4, frameHeight: 64});
+        this.load.spritesheet("rootBigSheet", rootBigSheet, {frameWidth: 4, frameHeight: 96});
         for (let a = 0; a < vehicles.length; a++) {
             this.load.spritesheet(`vehicle${a + 1}`, vehicles[a], {
                 frameWidth: 178,
