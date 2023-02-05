@@ -1,4 +1,5 @@
 import * as io from "socket.io-client";
+
 import {addCurrentPlayer, addOtherPlayer} from "./players";
 import {drawPlayerBrush} from "./brush";
 import {Player} from "./player";
@@ -15,7 +16,8 @@ export function disconnectWithServer(self) {
 }
 
 export function createForServer(self: Game) {
-    self.socket = io.connect(`http://${location.hostname}:8081`);
+    const url = location.hostname === 'krakjam.cracsoft.com' ? 'krakjam.cracsoft.com' : `http://${location.hostname}:8081`;
+    self.socket = io.connect(url);
     self.otherPlayers = self.physics.add.group();
     self.allPlayers = () => {
         return [self.mainPlayer as Player, ...self.otherPlayers.getChildren() as Player[]];

@@ -41,6 +41,7 @@ module.exports = {
     new webpack.DefinePlugin({
       CANVAS_RENDERER: JSON.stringify(true),
       WEBGL_RENDERER: JSON.stringify(true),
+      "process.env.SERVER_URL": "TEST"
     }),
     new HtmlWebpackPlugin({
       template: "./index.html",

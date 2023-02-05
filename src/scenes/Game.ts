@@ -1,5 +1,5 @@
 import {drawPlayerBrush} from "../brush";
-import {createForServer, disconnectWithServer, GameStatus} from "../gameSocket";
+import {createForServer, GameStatus} from "../gameSocket";
 import {Player} from "../player";
 import {TEXT_STYLES} from "../constants";
 import isMobile from "ismobilejs";
@@ -240,8 +240,8 @@ export default class extends Phaser.Scene {
             brushColor: player.brushColor
           })),
           surfaceSnapshot: snapshot,
+          socket: this.socket
         });
-        // disconnectWithServer(this);
       });
 
       // setTimeout(() => calculateScores(this.surface, this.allPlayers()), 10)

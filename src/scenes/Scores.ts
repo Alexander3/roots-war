@@ -1,7 +1,7 @@
 import Phaser from "phaser";
-import { TEXT_STYLES } from "../constants";
-import { calculateScores } from "../domain";
-import chroma from "chroma-js";
+import {TEXT_STYLES} from "../constants";
+import {calculateScores} from "../domain";
+import {disconnectWithServer} from "../gameSocket";
 
 export default class extends Phaser.Scene {
   private players: any[];
@@ -18,6 +18,9 @@ export default class extends Phaser.Scene {
     console.log("Scores init()", data);
     this.players = data.players;
     this.surfaceSnapshot = data.surfaceSnapshot;
+    setTimeout(() => {
+      disconnectWithServer(data.socket)
+    }, 3000);
   }
 
   create() {
