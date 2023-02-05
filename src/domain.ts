@@ -16,7 +16,7 @@ export function calculateScores(snap, players) {
   const ctx = canvas.getContext("2d", { willReadFrequently: true });
   ctx.canvas.width = 1920;
   ctx.canvas.height = 1080;
-  ctx.fillStyle = "black";
+  ctx.fillStyle = "transparent";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(snap, 0, 0);
   const pixels = ctx.getImageData(0, 0, 1920, 1080).data;
@@ -25,6 +25,9 @@ export function calculateScores(snap, players) {
     const r = pixels[x];
     const g = pixels[x + 1];
     const b = pixels[x + 2];
+    const a = pixels[x + 3];
+    if (a<0.1)
+      continue
 
     const color = chroma(r, g, b, "rgb");
     for (const player of players) {
