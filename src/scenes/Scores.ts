@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-import { Player } from "../player";
 import { TEXT_STYLES } from "../constants";
 import { calculateScores } from "../domain";
 
@@ -61,10 +60,16 @@ export default class extends Phaser.Scene {
         const points = `${player.playerName}: ${fPercent(
           results[player.playerId] / totalPaintedPixels
         )}`;
-
+        // console.log(player.playerName, player.brushColorObj.hex(), "#" + player.brushColor.toString(16))
+        // for(const p of this.players) {
+        //   const dis = chroma.deltaE(p.brushColorObj, player.brushColorObj)
+        //   console.log(`%c ${player.brushColorObj.hex()}`, `color: ${player.brushColorObj.hex()}`);
+        //   console.log(`%c ${p.brushColorObj.hex()}, ${dis}`, `color: ${p.brushColorObj.hex()}`);
+        // }
         this.add
           .text(w / 2, h / 2 + i * 100, points, TEXT_STYLES.bigTextStyle)
-          .setOrigin(0.5, 0.5);
+          .setOrigin(0.5, 0.5)
+        .setColor(player.brushColorObj.hex());
         // .setColor("#" + player.brushColor.toString(16));
         i += 1;
       }

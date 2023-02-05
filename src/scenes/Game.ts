@@ -196,6 +196,7 @@ export default class extends Phaser.Scene {
             playerId: player.playerId,
             playerName: player.playerName,
             brushColorObj: player.brushColorObj,
+            brushColor: player.brushColor
           })),
           surfaceSnapshot: snapshot,
         });

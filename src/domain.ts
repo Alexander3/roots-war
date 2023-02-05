@@ -2,13 +2,13 @@ import chroma from "chroma-js";
 
 var canvas = document.createElement("canvas");
 
-const DELTA_E_EPS = 50;
+const DELTA_E_EPS = 40;
 const scale=0.2
 export function calculateScores(snap, players) {
+  // document.body.append(snap)
   const scores = players.reduce(
     (acc, player) => ({
-      ...acc,
-      [player.playerId]: 0,
+      ...acc,    [player.playerId]: 0,
     }),
     {}
   );
@@ -22,6 +22,11 @@ export function calculateScores(snap, players) {
   ctx.fillStyle = "transparent";
   ctx.fillRect(0, 0, w, h);
   ctx.drawImage(snap, 0, 0,w,h);
+  // if(!document.hidden){
+  // var dataURL = canvas.toDataURL("image/png");
+  // var newTab = window.open('about:blank','image from canvas');
+  // newTab.document.write("<img src='" + dataURL + "' alt='from canvas'/>")
+  // )
   const pixels = ctx.getImageData(0, 0, w, h).data;
 
   for (let x = 0; x < pixels.length; x += 4) {
@@ -36,6 +41,7 @@ export function calculateScores(snap, players) {
     for (const player of players) {
       if (chroma.deltaE(color, player.brushColorObj) < DELTA_E_EPS) {
         scores[player.playerId]++;
+        break
       }
     }
   }
