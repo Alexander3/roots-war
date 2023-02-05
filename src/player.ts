@@ -21,6 +21,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   teamColor: number;
   brushColor: number;
   playerId: string;
+  playerName: string;
   speed: number;
   points = 0;
   brushColorObj: any;
@@ -51,6 +52,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.brushColor = brushColor;
     this.brushColorObj = chroma(brushColor);
     this.playerId = playerInfo.playerId;
+    this.playerName = playerInfo.name;
     this.speed = DEFAULT_SPEED;
     this.collisionPossible = true;
     this.spriteName = spriteName;

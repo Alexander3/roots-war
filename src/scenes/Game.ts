@@ -29,6 +29,7 @@ export default class extends Phaser.Scene {
   endTime: number;
   peacefulMusic: Phaser.Sound.BaseSound;
   titleText: Phaser.GameObjects.Text;
+  playerNameText: Phaser.GameObjects.Text;
 
   constructor() {
     super({
@@ -101,12 +102,31 @@ export default class extends Phaser.Scene {
     // this.worker = new SharedWorker('domain.js');
   }
 
+  onMainPlayerJoined(mainPlayer) {
+      const w = this.game.config.width as number;
+      const h = this.game.config.height as number;
+
+      this.playerNameText = this.make
+          .text({
+              x: w / 2,
+              y: h - h / 2,
+              text: `Hello, ${mainPlayer.playerName}`,
+              style: TEXT_STYLES.bigTextStyle,
+          })
+          .setOrigin(0.5, 0.5);
+  }
+
   changeGameStatus({gameStatus, data}) {
+      const w = this.game.config.width as number;
+      const h = this.game.config.height as number;
+
     this.gameStatus = gameStatus;
+
     if (gameStatus === GameStatus.Start) {
       this.tutorial.destroy();
       this.promptText.destroy();
       this.titleText.destroy();
+      this.playerNameText.setOrigin(1, 0.5).setText(this.mainPlayer.playerName).setPosition(w - 10, 40)
       this.endTime = data.endTime || Date.now() + 6000;
       this.mainPlayer.startGame(this);
       this.allPlayers().forEach((player) => {
@@ -123,7 +143,7 @@ export default class extends Phaser.Scene {
             }
         } else if (this.gameStatus === GameStatus.Finished) {
             setTimeout(() => calculateScores(this.surface, this.allPlayers()), 10)
-            this.scene.start("Scores", {players: this.allPlayers()});
+            this.scene.start("Scores", {players: this.allPlayers(), surface: this.surface});
         } else {
             if (this.endTime) {
                 const timeRemaining = Math.ceil((this.endTime - Date.now()) / 1000);

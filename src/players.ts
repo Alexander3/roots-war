@@ -3,6 +3,7 @@ import Game from "./scenes/Game";
 
 export function addCurrentPlayer(self, playerInfo) {
     self.mainPlayer = addPlayer(self, playerInfo)
+    self.onMainPlayerJoined(self.mainPlayer);
 }
 
 export function addOtherPlayer(self, playerInfo) {

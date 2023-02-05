@@ -2,6 +2,7 @@ var express = require('express');
 var _ = require('lodash');
 var app = express();
 var server = require('http').Server(app);
+var playerNamesPool = require('./src/data/names');
 var io = require('socket.io')(server, {
     cors: {
         origin: "*",
@@ -30,7 +31,7 @@ var PERK_TYPE = {
     DISRUPTION_NO_SEED: 'disruption-no-seeds'
 }
 
-const GAME_LENGTH = 300000
+const GAME_LENGTH = 6000
 
 function drawNewPerk() {
     const perkTypes = Object.values(PERK_TYPE);
@@ -104,6 +105,7 @@ const tryToStartGame = () => {
     }
 }
 
+
 const initialPositionsPool = [
     {
         id: 1,
@@ -147,7 +149,7 @@ function getInitialPlayerPosition() {
 io.on('connection', function (socket) {
     const team = getTeam();
     const initialPosition = getInitialPlayerPosition();
-    console.log(initialPosition);
+    const name = _.sample(playerNamesPool);
     console.log('a user connected: ', socket.id, team);
     // create a new player and add it to our players object
     players[socket.id] = {
@@ -155,6 +157,7 @@ io.on('connection', function (socket) {
         x: initialPosition.x,
         y: initialPosition.y,
         playerId: socket.id,
+        name,
         team
     };
     // send the players object to the new player
