@@ -192,18 +192,7 @@ export default class extends Phaser.Scene {
       this.allPlayers().forEach((player) => {
         player.setVisible(true);
       });
-    }
-  }
-
-  update(time) {
-    if (this.gameStatus === GameStatus.Waiting) {
-      if (this.spaceKey.isDown && !this.mainPlayer.playerReady) {
-        this.socket.emit("playerReady");
-        this.mainPlayer.playerReady = true;
-        this.promptText.setText("Waiting for other players!");
-        this.promptTween.stop();
-      }
-    } else if (this.gameStatus === GameStatus.Finished) {
+    } else if (gameStatus === GameStatus.Finished) {
       this.surface.snapshot((snapshot) => {
         this.scene.start("Scores", {
           players: this.allPlayers().map((player) => ({
@@ -218,6 +207,19 @@ export default class extends Phaser.Scene {
       });
 
       // setTimeout(() => calculateScores(this.surface, this.allPlayers()), 10)
+    }
+  }
+
+  update(time) {
+    if (this.gameStatus === GameStatus.Waiting) {
+      if (this.spaceKey.isDown && !this.mainPlayer.playerReady) {
+        this.socket.emit("playerReady");
+        this.mainPlayer.playerReady = true;
+        this.promptText.setText("Waiting for other players!");
+        this.promptTween.stop();
+      }
+    } else if (this.gameStatus === GameStatus.Finished) {
+      return
     } else {
       if (this.endTime) {
         const timeRemaining = Math.ceil((this.endTime - Date.now()) / 1000);

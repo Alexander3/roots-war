@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { TEXT_STYLES } from "../constants";
 import { calculateScores } from "../domain";
+import chroma from "chroma-js";
 
 export default class extends Phaser.Scene {
   private players: any[];
@@ -41,7 +42,6 @@ export default class extends Phaser.Scene {
     gradient.addColorStop(1, '#390041');
     this.titleText.setFill(gradient);
 
-
     setTimeout(() => {
       const results: { [playerId: string]: number } = calculateScores(
         this.surfaceSnapshot,
@@ -55,17 +55,11 @@ export default class extends Phaser.Scene {
         (acc, paintedPixelsByPlayer) => acc + paintedPixelsByPlayer,
         0
       );
-
+      this.players=this.players.sort((p1,p2)=>p2.points - p1.points)
       for (const player of this.players) {
         const points = `${player.playerName}: ${fPercent(
           results[player.playerId] / totalPaintedPixels
         )}`;
-        // console.log(player.playerName, player.brushColorObj.hex(), "#" + player.brushColor.toString(16))
-        // for(const p of this.players) {
-        //   const dis = chroma.deltaE(p.brushColorObj, player.brushColorObj)
-        //   console.log(`%c ${player.brushColorObj.hex()}`, `color: ${player.brushColorObj.hex()}`);
-        //   console.log(`%c ${p.brushColorObj.hex()}, ${dis}`, `color: ${p.brushColorObj.hex()}`);
-        // }
         this.add
           .text(w / 2, h / 2 + i * 100, points, TEXT_STYLES.bigTextStyle)
           .setOrigin(0.5, 0.5)
