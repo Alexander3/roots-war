@@ -169,6 +169,8 @@ io.on('connection', function (socket) {
         setTimeout(() => {
             tryToStartGame();
         }, 2000)
+
+        io.emit('playerReady', players[socket.id].playerId);
     });
     // update all other players of the new player
     socket.broadcast.emit('newPlayer', players[socket.id]);

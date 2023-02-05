@@ -27,6 +27,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   brushColorObj: any;
   oldPosition: { x: number; y: number; rotation: number };
   spriteName: string;
+  playerReady: boolean = false;
 
   constructor(game: Game, playerInfo) {
     const {teamColor, brushColor, vehicle: spriteName} = getPlayerColors(playerInfo);

@@ -31,6 +31,7 @@ export default class extends Phaser.Scene {
   peacefulMusic: Phaser.Sound.BaseSound;
   titleText: Phaser.GameObjects.Text;
   playerNameText: Phaser.GameObjects.Text;
+  readyPlayersText: Phaser.GameObjects.Text;
 
   constructor() {
     super({
@@ -112,6 +113,15 @@ export default class extends Phaser.Scene {
       })
       .setOrigin(0.5, 0.5);
 
+    this.readyPlayersText = this.make
+        .text({
+          x: w / 2,
+          y: h / 2 + 300,
+          text: `Players ready: 0`,
+          style: TEXT_STYLES.bigTextStyle,
+        })
+        .setOrigin(0.5, 0.5);
+
     const gradient = this.titleText.context.createLinearGradient(0, 0, 0, this.titleText.height);
     gradient.addColorStop(0, '#0aafa9');
     gradient.addColorStop(.3, '#dddddd');
@@ -124,7 +134,6 @@ export default class extends Phaser.Scene {
 
     this.peacefulMusic = this.sound.add("peaceful-music");
     this.peacefulMusic.play();
-    // this.worker = new SharedWorker('domain.js');
   }
 
   onMainPlayerJoined(mainPlayer) {
@@ -141,6 +150,10 @@ export default class extends Phaser.Scene {
       .setOrigin(0.5, 0.5);
   }
 
+  onSomePlayerReady(amountOfReadyPlayers = 0) {
+      this.readyPlayersText.setText(`Players ready: ${amountOfReadyPlayers}`)
+  }
+
   changeGameStatus({ gameStatus, data }) {
     const w = this.game.config.width as number;
     const h = this.game.config.height as number;
@@ -151,6 +164,7 @@ export default class extends Phaser.Scene {
       this.tutorial.destroy();
       this.promptText.destroy();
       this.titleText.destroy();
+      this.readyPlayersText.destroy();
       this.playerNameText
         .setOrigin(1, 0.5)
         .setText(this.mainPlayer.playerName)
@@ -166,8 +180,9 @@ export default class extends Phaser.Scene {
 
   update(time) {
     if (this.gameStatus === GameStatus.Waiting) {
-      if (this.spaceKey.isDown) {
+      if (this.spaceKey.isDown && !this.mainPlayer.playerReady) {
         this.socket.emit("playerReady");
+        this.mainPlayer.playerReady = true;
         this.promptText.setText("Waiting for other players!");
         this.promptTween.stop();
       }

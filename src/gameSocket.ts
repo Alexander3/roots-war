@@ -168,6 +168,18 @@ export function createForServer(self: Game) {
         })
     });
 
+    // RECEIVING INFO ABOUT COLLISION BETWEEN TWO PLAYERS
+    self.socket.on("playerReady", function (playerId) {
+        console.log("READY", playerId);
+        self.allPlayers().forEach((player) => {
+            if (player.playerId === playerId) {
+                player.playerReady = true;
+            }
+        })
+        const amountOfReadyPlayers = self.allPlayers().filter(player => player.playerReady).length ?? 0;
+        self.onSomePlayerReady(amountOfReadyPlayers);
+    });
+
     // CREATING INPUT CONTROLS FOR CURRENT PLAYER
     self.cursors = self.input.keyboard.createCursorKeys();
 
