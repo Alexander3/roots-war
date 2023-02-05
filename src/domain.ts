@@ -4,7 +4,7 @@ var canvas = document.createElement("canvas");
 
 const DELTA_E_EPS = 29;
 const scale=0.2
-export function calculateScores(snap, players :string[]) {
+export function calculateScores(snap, players) {
   players=players.sort((a,b)=>a.playerId.localeCompare(b.playerId))
   // document.body.append(snap)
   const scores = players.reduce(
@@ -23,10 +23,10 @@ export function calculateScores(snap, players :string[]) {
   ctx.fillStyle = "transparent";
   ctx.fillRect(0, 0, w, h);
   ctx.drawImage(snap, 0, 0,w,h);
-  var dataURL = canvas.toDataURL("image/png");
-  const img=document.createElement('img')
-  img.src=dataURL
-  document.body.append(img)
+  // var dataURL = canvas.toDataURL("image/png");
+  // const img=document.createElement('img')
+  // img.src=dataURL
+  // document.body.append(img)
   const pixels = ctx.getImageData(0, 0, w, h).data;
 
   for (let x = 0; x < pixels.length; x += 4) {
