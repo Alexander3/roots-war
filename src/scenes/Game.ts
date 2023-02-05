@@ -153,7 +153,7 @@ export default class extends Phaser.Scene {
     this.fastSound = this.sound.add("fast-sound");
     this.waterDropSound = this.sound.add("water-drop-sound");
     this.rockSound = this.sound.add("rock-sound");
-    this.peacefulMusic.play();
+    // this.peacefulMusic.play();
   }
 
   onMainPlayerJoined(mainPlayer) {

@@ -9,6 +9,7 @@ export default class extends Phaser.Scene {
   private titleText: Phaser.GameObjects.Text;
   private spaceKey: Phaser.Input.Keyboard.Key;
   gameScene:any;
+  private restartText: Phaser.GameObjects.Text;
 
   constructor() {
     super({
@@ -38,6 +39,12 @@ export default class extends Phaser.Scene {
       .text(w / 2, h / 2 - 150, "Calculating results...", {
         ...TEXT_STYLES.largeTextStyle,
         fill: "#0aafa9",
+        stroke: "#390041",
+      } as any)
+      .setOrigin(0.5, 0.5);
+     this.restartText = this.add
+      .text(w / 2, h-150, "Press space to restart", {
+        ...TEXT_STYLES.mediumTextStyle,
         stroke: "#390041",
       } as any)
       .setOrigin(0.5, 0.5);
