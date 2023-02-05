@@ -133,9 +133,9 @@ const getPlayerColors = ({ team }) => {
       };
     case "grey":
       return {
+        vehicle: "vehicle6",
         teamColor: 0xcccccc,
         brushColor: 0xcccccc,
-        vehicle: "vehicle6",
       };
   }
 };
