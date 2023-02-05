@@ -26,7 +26,7 @@ var PERK_TYPE = {
     DISRUPTION_NO_SEED: 'disruption-no-seeds'
 }
 
-const GAME_LENGTH = 3000
+const GAME_LENGTH = 30000
 
 function drawNewPerk() {
     const perkTypes = Object.values(PERK_TYPE);

@@ -206,7 +206,7 @@ export default class extends Phaser.Scene {
           })),
           surfaceSnapshot: snapshot,
         });
-        disconnectWithServer(this);
+        // disconnectWithServer(this);
       });
 
       // setTimeout(() => calculateScores(this.surface, this.allPlayers()), 10)
