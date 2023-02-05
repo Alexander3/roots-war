@@ -2,6 +2,7 @@ import {drawPlayerBrush} from "../brush";
 import {createForServer, disconnectWithServer, GameStatus} from "../gameSocket";
 import {Player} from "../player";
 import {TEXT_STYLES} from "../constants";
+import isMobile from "ismobilejs";
 
 interface IGameStatusData {
   gameStatus: GameStatus;
@@ -35,6 +36,9 @@ export default class extends Phaser.Scene {
   titleText: Phaser.GameObjects.Text;
   playerNameText: Phaser.GameObjects.Text;
   readyPlayersText: Phaser.GameObjects.Text;
+  mobileInstructionTextLeft: Phaser.GameObjects.Text;
+  mobileInstructionTextRight: Phaser.GameObjects.Text;
+  mobileInstructionDivider: Phaser.GameObjects.Line;
 
   constructor() {
     super({
@@ -144,6 +148,29 @@ export default class extends Phaser.Scene {
     gradient.addColorStop(1, '#390041');
     this.titleText.setFill(gradient);
 
+
+    this.mobileInstructionTextLeft = this.add
+      .text(
+        w / 4,
+        h / 2,
+        "Touch to turn left",
+        TEXT_STYLES.mobileInstructionTextStyle
+      )
+      .setOrigin(0.5, 0.5)
+      .setAlpha(0);
+
+    this.mobileInstructionTextRight = this.add
+      .text(
+        (w * 3) / 4,
+        h / 2,
+        "Touch to turn right",
+        TEXT_STYLES.mobileInstructionTextStyle
+      )
+      .setOrigin(0.5, 0.5)
+      .setAlpha(0);
+
+    this.mobileInstructionDivider = this.add.line(w / 2, h / 2, 0, 0, 0, h - 200, 0xffffff, 0).setLineWidth(10).setOrigin(0.5, 0.5)
+
     this.spaceKey = this.input.keyboard.addKey(
       Phaser.Input.Keyboard.KeyCodes.SPACE
     );
@@ -192,6 +219,17 @@ export default class extends Phaser.Scene {
       this.allPlayers().forEach((player) => {
         player.setVisible(true);
       });
+
+      if (isMobile().any) {
+        this.mobileInstructionTextRight.setAlpha(0.3);
+        this.mobileInstructionTextLeft.setAlpha(0.3);
+        this.mobileInstructionDivider.setStrokeStyle(20, 0xffffff, 0.3);
+        setTimeout(() => {
+          this.mobileInstructionTextRight.destroy();
+          this.mobileInstructionTextLeft.destroy();
+          this.mobileInstructionDivider.destroy();
+        }, 5000);
+      }
     } else if (gameStatus === GameStatus.Finished) {
       this.surface.snapshot((snapshot) => {
         this.scene.start("Scores", {
@@ -210,9 +248,29 @@ export default class extends Phaser.Scene {
     }
   }
 
+  isTouchingHalfOfScreen(whichHalf: string) {
+    if (!this.input.activePointer.isDown) {
+      return false;
+    }
+
+    if (
+      whichHalf === "left" &&
+      this.input.activePointer.x <= (this.game.config.width as number) / 2
+    ) {
+      return true;
+    } else if (
+      whichHalf === "right" &&
+      this.input.activePointer.x > (this.game.config.width as number) / 2
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
   update(time,delta) {
     if (this.gameStatus === GameStatus.Waiting) {
-      if (this.spaceKey.isDown && !this.mainPlayer.playerReady) {
+      if ((this.spaceKey.isDown || this.input.activePointer.isDown) && !this.mainPlayer.playerReady) {
         this.socket.emit("playerReady");
         this.mainPlayer.playerReady = true;
         this.promptText.setText("Waiting for other players!");
@@ -227,9 +285,9 @@ export default class extends Phaser.Scene {
           timeRemaining >= 0 ? `${timeRemaining} seconds remaining` : "";
       }
 
-      if (this.cursors.left.isDown) {
+      if (this.cursors.left.isDown || this.isTouchingHalfOfScreen('left')) {
         this.mainPlayer.angle -= 4;
-      } else if (this.cursors.right.isDown) {
+      } else if (this.cursors.right.isDown || this.isTouchingHalfOfScreen('right')) {
         this.mainPlayer.angle += 4;
       }
 
