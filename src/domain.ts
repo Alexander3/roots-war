@@ -22,11 +22,10 @@ export function calculateScores(snap, players) {
   ctx.fillStyle = "transparent";
   ctx.fillRect(0, 0, w, h);
   ctx.drawImage(snap, 0, 0,w,h);
-  // if(!document.hidden){
-  // var dataURL = canvas.toDataURL("image/png");
-  // var newTab = window.open('about:blank','image from canvas');
-  // newTab.document.write("<img src='" + dataURL + "' alt='from canvas'/>")
-  // )
+  var dataURL = canvas.toDataURL("image/png");
+  const img=document.createElement('img')
+  img.src=dataURL
+  document.body.append(img)
   const pixels = ctx.getImageData(0, 0, w, h).data;
 
   for (let x = 0; x < pixels.length; x += 4) {
@@ -34,7 +33,7 @@ export function calculateScores(snap, players) {
     const g = pixels[x + 1];
     const b = pixels[x + 2];
     const a = pixels[x + 3];
-    if (a<0.1)
+    if (a<0.01)
       continue
 
     const color = chroma(r, g, b, "rgb");
