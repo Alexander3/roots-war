@@ -75,9 +75,8 @@ export function createForServer(self: Game) {
     });
 
     // RECEIVING INFO WHEN GAME CAN BE STARTED
-    self.socket.on("gameStatusChanged", function (gameStatus) {
-        self.changeGameStatus(gameStatus)
-
+    self.socket.on("gameStatusChanged", function (data) {
+        self.changeGameStatus(data)
         if (self.gameStatus === GameStatus.Finished) {
             disconnectWithServer(self);
         }
