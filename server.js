@@ -162,7 +162,7 @@ io.on('connection', function (socket) {
     if (gameStatus === 'started') {
         return false;
     }
-    const team = getTeam();
+    const team = getNextTeam();
     const initialPosition = getInitialPlayerPosition();
     const name = `${_.sample(adjectives)} ${_.sample(names)}`;
     console.log('a user connected: ', socket.id, team);

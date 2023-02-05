@@ -102,11 +102,14 @@ export const invertRB = (colour) => {
   return parseInt([b, g, r].join(""), 16);
 };
 
-const colorOptions = ['#d763a9', '#0000ff',
- '#00f8ff',
-  '#97ff00',
-  '#796f00', '#ff6f00',
-  '#ff0000'].map(c=>chroma(c).num())
+const colorOptions = [
+  "#2E5A18",
+  "#381700",
+  "#10e004",
+  "#796f00",
+  "#524B49",
+  "#468564",
+].map((c) => chroma(c).num());
 
 const getPlayerColors = ({ team }) => {
   switch (team) {
