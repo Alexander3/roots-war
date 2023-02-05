@@ -13,6 +13,7 @@ require('dotenv').config()
 
 const teamNames = ["white", "green", "orange", "pink", "red", "grey"];
 let endTime
+let gameTimeout
 
 var GAME_WIDTH = 1920;
 var GAME_HEIGHT = 1080;
@@ -89,6 +90,7 @@ const changeGameStatus = ({gameStatus, data}) => {
 
 const stopGame = () => {
     endTime = null;
+    clearTimeout(gameTimeout)
     changeGameStatus({
         gameStatus: 'finished'
     })
@@ -106,7 +108,7 @@ const tryToStartGame = () => {
             }
         })
 
-        setTimeout(() => {
+        gameTimeout = setTimeout(() => {
             stopGame();
         }, GAME_LENGTH)
     }
