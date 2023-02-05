@@ -18,6 +18,7 @@ export default class extends Phaser.Scene {
   spaceKey: Phaser.Input.Keyboard.Key;
   socket: any;
   promptText: Phaser.GameObjects.Text;
+  promptTween:  Phaser.Tweens.Tween;
   perk: Phaser.Types.Physics.Arcade.ImageWithDynamicBody;
   otherPlayers: Phaser.Physics.Arcade.Group;
   mainPlayer: Player;
@@ -37,6 +38,7 @@ export default class extends Phaser.Scene {
     });
     this.gameStatus = GameStatus.Waiting;
   }
+
 
   create() {
     createForServer(this);
@@ -83,6 +85,19 @@ export default class extends Phaser.Scene {
         style: TEXT_STYLES.mediumTextStyle,
       })
       .setOrigin(0.5, 0.5);
+
+    this.promptTween = this.tweens.add({
+      targets: this.promptText,
+      props: {
+        scale: {
+          value: 1.05,
+          duration: 1000,
+          ease: 'Power1',
+          yoyo: true,
+          repeat: -1
+        },
+      }
+    });
 
     this.titleText = this.make
       .text({
@@ -154,6 +169,7 @@ export default class extends Phaser.Scene {
       if (this.spaceKey.isDown) {
         this.socket.emit("playerReady");
         this.promptText.setText("Waiting for other players!");
+        this.promptTween.stop();
       }
     } else if (this.gameStatus === GameStatus.Finished) {
       this.surface.snapshot((snapshot) => {

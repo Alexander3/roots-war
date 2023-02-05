@@ -42,6 +42,7 @@ export default class extends Phaser.Scene {
     gradient.addColorStop(1, '#390041');
     this.titleText.setFill(gradient);
 
+
     setTimeout(() => {
       const results: { [playerId: string]: number } = calculateScores(
         this.surfaceSnapshot,
