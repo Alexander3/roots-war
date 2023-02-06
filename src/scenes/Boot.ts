@@ -21,6 +21,7 @@ import fastSound from "../assets/sounds/fast.mp3";
 import waterDropSound from "../assets/sounds/water-drop.mp3";
 import rockSound from "../assets/sounds/rock.mp3";
 import resultsBackgroundImage from "../assets/images/results-background.png";
+import {GameSceneKeys} from "../index";
 
 const vehicles = [
     vehicleImg1,
@@ -99,7 +100,7 @@ export default class extends Phaser.Scene {
         this.load.on('complete', () => {
             loadingText.setText("Let's go!")
             setTimeout(() => {
-                this.scene.start('Game');
+                this.scene.start(GameSceneKeys.Game, {});
             }, 400)
         });
 

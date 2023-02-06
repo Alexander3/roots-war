@@ -5,10 +5,20 @@ import GameScene from "./scenes/Game";
 import ScoresScene from "./scenes/Scores";
 import {HEIGHT, WIDTH} from "./constants";
 import {getFrameRate} from "./utils";
+import GameConfig = Phaser.Types.Core.GameConfig;
 
-const config = {
+export enum GameSceneKeys {
+    Game = 'Game',
+    Scores = 'Scores'
+}
+
+const config: GameConfig = {
     type: Phaser.AUTO,
     parent: "phaser-example",
+    fps: {
+        forceSetTimeOut: true,
+        target: getFrameRate(),
+    },
     physics: {
         default: "arcade",
         arcade: {

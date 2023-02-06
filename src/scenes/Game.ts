@@ -1,9 +1,10 @@
 import {drawPlayerBrush} from "../brush";
-import {createForServer, GameStatus} from "../gameSocket";
+import {createForServer, GameStatus, initPlayers} from "../gameSocket";
 import {Player} from "../player";
 import {TEXT_STYLES} from "../constants";
 import isMobile from "ismobilejs";
 import {getFrameRate} from "../utils";
+import {GameSceneKeys} from "../index";
 
 interface IGameStatusData {
     gameStatus: GameStatus;
@@ -25,6 +26,7 @@ export default class extends Phaser.Scene {
     mainPlayer: Player;
 
     allPlayers: () => Player[];
+    getOtherPlayersChildren: () => Player[];
     standardBrush: Phaser.GameObjects.Image;
     bigBrush: Phaser.GameObjects.Image;
     timeText: Phaser.GameObjects.Text;
@@ -43,13 +45,14 @@ export default class extends Phaser.Scene {
 
     constructor() {
         super({
-            key: "Game",
+            key: GameSceneKeys.Game,
         });
-        this.gameStatus = GameStatus.Waiting;
     }
 
 
     create() {
+        this.gameStatus = GameStatus.Waiting;
+        this.otherPlayers = this.physics.add.group();
         createForServer(this);
         const w = this.game.config.width as number;
         const h = this.game.config.height as number;
@@ -64,6 +67,8 @@ export default class extends Phaser.Scene {
             frameRate: getFrameRate(),
             repeat: -1,
         });
+
+        this.physics.world.setFPS(getFrameRate())
 
         this.standardBrush = this.add
             .sprite(100, 100, "rootStandardSheet")
@@ -176,6 +181,9 @@ export default class extends Phaser.Scene {
             Phaser.Input.Keyboard.KeyCodes.SPACE
         );
 
+        // CREATING INPUT CONTROLS FOR CURRENT PLAYER
+        this.cursors = this.input.keyboard.createCursorKeys();
+
         this.peacefulMusic = this.sound.add("peaceful-music");
         this.freezeSound = this.sound.add("freeze-sound");
         this.fastSound = this.sound.add("fast-sound");
@@ -190,7 +198,9 @@ export default class extends Phaser.Scene {
     }
 
     onSomePlayerReady(amountOfReadyPlayers = 0, allPlayersCount = 0) {
-        this.readyPlayersText.setText(`Players ready: ${amountOfReadyPlayers}/${allPlayersCount}`)
+        const text = this.readyPlayersText;
+        const {visible} = text;
+        visible && this.readyPlayersText.setText(`Players ready: ${amountOfReadyPlayers}/${allPlayersCount}`)
     }
 
     onPlayersCountUpdate(amountOfReadyPlayers = 0, allPlayersCount = 0) {
@@ -200,52 +210,67 @@ export default class extends Phaser.Scene {
     }
 
     changeGameStatus({gameStatus, data}) {
-        const w = this.game.config.width as number;
-        const h = this.game.config.height as number;
+        const prevStatus = this.gameStatus;
+        if (this.gameStatus !== gameStatus) {
+            this.gameStatus = gameStatus;
+            const w = this.game.config.width as number;
+            const h = this.game.config.height as number;
 
-        this.gameStatus = gameStatus;
+            if (gameStatus === GameStatus.Start) {
+                initPlayers(this)
+                this.tutorial.destroy();
+                this.promptText.destroy();
+                this.titleText.destroy();
+                this.readyPlayersText.destroy();
+                this.playerNameText
+                    .setOrigin(1, 0.5)
+                    .setText(this.mainPlayer.playerName)
+                    .setPosition(w - 10, 60)
+                    .setTint(this.mainPlayer.brushColor);
+                this.endTime = data.endTime || Date.now() + 6000;
+                this.mainPlayer.startGame(this);
+                this.mainPlayer.startActivePlayer(this);
+                this.allPlayers().forEach((player) => {
+                    player.startGame(this);
+                });
 
-        if (gameStatus === GameStatus.Start) {
-            this.tutorial.destroy();
-            this.promptText.destroy();
-            this.titleText.destroy();
-            this.readyPlayersText.destroy();
-            this.playerNameText
-                .setOrigin(1, 0.5)
-                .setText(this.mainPlayer.playerName)
-                .setPosition(w - 10, 60)
-                .setTint(this.mainPlayer.brushColor);
-            this.endTime = data.endTime || Date.now() + 6000;
-            this.mainPlayer.startGame(this);
-            this.allPlayers().forEach((player) => {
-                player.setVisible(true);
-            });
-
-            if (isMobile().any) {
-                this.mobileInstructionTextRight.setAlpha(0.3);
-                this.mobileInstructionTextLeft.setAlpha(0.3);
-                this.mobileInstructionDivider.setStrokeStyle(20, 0xffffff, 0.3);
-                setTimeout(() => {
-                    this.mobileInstructionTextRight.destroy();
-                    this.mobileInstructionTextLeft.destroy();
-                    this.mobileInstructionDivider.destroy();
-                }, 5000);
-            }
-        } else if (gameStatus === GameStatus.Finished) {
-            this.surface.snapshot((snapshot) => {
-                this.scene.start("Scores", {
-                    players: this.allPlayers().map((player) => ({
+                if (isMobile().any) {
+                    this.mobileInstructionTextRight.setAlpha(0.3);
+                    this.mobileInstructionTextLeft.setAlpha(0.3);
+                    this.mobileInstructionDivider.setStrokeStyle(20, 0xffffff, 0.3);
+                    setTimeout(() => {
+                        this.mobileInstructionTextRight.destroy();
+                        this.mobileInstructionTextLeft.destroy();
+                        this.mobileInstructionDivider.destroy();
+                    }, 5000);
+                }
+            } else if (gameStatus === GameStatus.Finished) {
+                if (prevStatus === GameStatus.Start) {
+                    this.mainPlayer.stopGame();
+                    this.allPlayers().forEach((player) => {
+                        player.stopGame();
+                    });
+                    const p = this.allPlayers().map((player) => ({
                         playerId: player.playerId,
                         playerName: player.playerName,
                         brushColorObj: player.brushColorObj,
                         brushColor: player.brushColor
-                    })),
-                    surfaceSnapshot: snapshot,
-                    socket: this.socket
-                });
-            });
-
-            // setTimeout(() => calculateScores(this.surface, this.allPlayers()), 10)
+                    }));
+                    this.mainPlayer.playerReady = false;
+                    this.surface.snapshot((snapshot) => {
+                        this.peacefulMusic.stop()
+                        this.otherPlayers.destroy()
+                        this.scene.start(GameSceneKeys.Scores, {
+                            players: p,
+                            surfaceSnapshot: snapshot,
+                            socket: this.socket
+                        });
+                    });
+                } else {
+                    this.socket.emit("playerReady", false);
+                    this.scene.restart();
+                }
+            }
         }
     }
 
@@ -272,7 +297,7 @@ export default class extends Phaser.Scene {
     update(time, delta) {
         if (this.gameStatus === GameStatus.Waiting) {
             if ((this.spaceKey.isDown || this.input.activePointer.isDown) && !this.mainPlayer.playerReady) {
-                this.socket.emit("playerReady");
+                this.socket.emit("playerReady", true);
                 this.mainPlayer.playerReady = true;
                 this.promptText.setText("Waiting for other players!");
                 this.promptTween.stop();
