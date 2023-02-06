@@ -2,6 +2,7 @@ const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+require('dotenv').config({ path: './.env' });
 
 module.exports = {
   mode: "development",
@@ -39,9 +40,7 @@ module.exports = {
       root: path.resolve(__dirname, "../"),
     }),
     new webpack.DefinePlugin({
-      CANVAS_RENDERER: JSON.stringify(true),
-      WEBGL_RENDERER: JSON.stringify(true),
-      "process.env.SERVER_URL": "TEST"
+      "process.env": JSON.stringify(process.env),
     }),
     new HtmlWebpackPlugin({
       template: "./index.html",

@@ -4,6 +4,7 @@ import BootScene from "./scenes/Boot";
 import GameScene from "./scenes/Game";
 import ScoresScene from "./scenes/Scores";
 import {HEIGHT, WIDTH} from "./constants";
+import {getFrameRate} from "./utils";
 
 const config = {
     type: Phaser.AUTO,
@@ -11,7 +12,7 @@ const config = {
     physics: {
         default: "arcade",
         arcade: {
-            fps: 60,
+            fps: getFrameRate(),
             debug: false,
             gravity: {y: 0},
         },

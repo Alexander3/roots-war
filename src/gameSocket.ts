@@ -11,12 +11,12 @@ export enum GameStatus {
     Finished = 'finished'
 }
 
-export function disconnectWithServer(self) {
-    self.socket.disconnect();
+export function disconnectWithServer(socket) {
+    socket.disconnect();
 }
 
 export function createForServer(self: Game) {
-    const url = location.hostname === 'krakjam.cracsoft.com' ? 'krakjam.cracsoft.com' : `http://${location.hostname}:8081`;
+    const url = process.env.SOCKET_URL || `http://${location.hostname}:8081`;
     self.socket = io.connect(url);
     self.otherPlayers = self.physics.add.group();
     self.allPlayers = () => {

@@ -95,3 +95,7 @@ export const mobileCheck = function () {
     })(navigator.userAgent || navigator.vendor);
     return check;
 }
+
+export const getFrameRate = (): number => {
+    return +process.env.FRAME_RATE || 60
+}
