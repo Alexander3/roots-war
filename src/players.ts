@@ -10,23 +10,26 @@ export function addCurrentPlayer(self, playerInfo) {
 }
 
 export function addOtherPlayer(self, playerInfo) {
-    const otherPlayer = addPlayer(self, playerInfo)
-    otherPlayer.playerId = playerInfo.playerId;
+    let player;
     self.getOtherPlayersChildren().forEach(function (otherPlayer: Player) {
         if (playerInfo.playerId === otherPlayer.playerId) {
-            otherPlayer.destroy();
+            player = otherPlayer;
         }
     });
-    if (self.otherPlayers?.children) {
-        self.otherPlayers.add(otherPlayer);
+    if (!player) {
+        player = addPlayer(self, playerInfo)
+        player.playerId = playerInfo.playerId;
+    }
+    if (self.mainPlayer && self.otherPlayers?.children) {
+        self.otherPlayers.add(player);
         self.physics.add.overlap(
             self.mainPlayer,
-            otherPlayer,
+            player,
             function () {
-                if (self.mainPlayer.collisionPossible && otherPlayer.collisionPossible) {
+                if (self.mainPlayer.collisionPossible && player.collisionPossible) {
                     self.socket.emit("playersCollision", {
                         player1: self.mainPlayer.playerId,
-                        player2: otherPlayer.playerId
+                        player2: player.playerId
                     });
                 }
             },

@@ -10,7 +10,7 @@ const colors = colormap({
     format: "hex",
     alpha: 1,
 });
-export const DEFAULT_SPEED = 240;
+export const DEFAULT_SPEED = 300;
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
     color: any;
@@ -37,27 +37,33 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             vehicle: spriteName,
         } = getPlayerColors(playerInfo);
         super(game, playerInfo.x, playerInfo.y, spriteName);
-        this.color = colors.pop();
-        this.orientation = 0;
-        this.visible = false;
-        this.hasBigBrush = false;
-        this.isBrushEnabled = true;
         this.teamColor = teamColor;
         this.brushColor = brushColor;
         this.brushColorObj = chroma(brushColor);
         this.playerId = playerInfo.playerId;
         this.playerName = playerInfo.name;
-        this.speed = DEFAULT_SPEED;
-        this.collisionPossible = true;
         this.spriteName = spriteName;
-        this.paintCounter = 0;
         this.setOrigin(0.5, 0.5).setDisplaySize(90, 70);
         this.setAngle(45);
+        this.resetToDefaults();
+        this.color = colors.pop();
     }
 
+
     create(game: Game) {
+        this.resetToDefaults();
         this.resetSpeed();
         this.enablePaint();
+    }
+
+    resetToDefaults() {
+        this.orientation = 0;
+        this.visible = false;
+        this.hasBigBrush = false;
+        this.isBrushEnabled = true;
+        this.speed = DEFAULT_SPEED;
+        this.collisionPossible = true;
+        this.paintCounter = 0;
     }
 
     update() {
@@ -94,6 +100,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     disableCollision() {
         this.collisionPossible = false;
+        this.speed = DEFAULT_SPEED;
     }
 
     enableCollision() {

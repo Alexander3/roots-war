@@ -33,18 +33,13 @@ function displayReadyPlayers(self: Game) {
 }
 
 export function initPlayers(self: Game) {
-    const [_, currentPlayerInfo] = Object.entries(gamePlayers).find(([playerId, playerInfo]) => {
-        return playerId === self.socket.id
-    });
-
-    addCurrentPlayer(self, currentPlayerInfo);
-
     Object.keys(gamePlayers).forEach(function (id) {
-        if (gamePlayers[id].playerId !== self.socket.id) {
+        if (gamePlayers[id].playerId == self.socket.id) {
+            addCurrentPlayer(self, gamePlayers[id]);
+        } else {
             addOtherPlayer(self, gamePlayers[id]);
         }
     });
-
     displayReadyPlayers(self);
 }
 
@@ -58,7 +53,11 @@ export function createForServer(self: Game) {
         }
 
         self.allPlayers = () => {
-            return [self.mainPlayer as Player, ...self.getOtherPlayersChildren() as Player[]];
+            if (self.mainPlayer) {
+                return [self.mainPlayer as Player, ...self.getOtherPlayersChildren() as Player[]];
+            } else {
+                return [...self.getOtherPlayersChildren() as Player[]];
+            }
         }
 
         // ADDING EXISTING PLAYERS WHEN JOINING AS NEW PLAYER
@@ -218,7 +217,7 @@ export function createForServer(self: Game) {
                 if (player.playerId === player1 || player.playerId === player2) {
                     player.angle += 120;
                     player.alpha = 0.5;
-                    player.speed /= 2;
+                    player.speed *= 2;
                     player.disableCollision()
                 }
             })

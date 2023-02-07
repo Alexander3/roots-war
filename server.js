@@ -31,20 +31,25 @@ var PERK_TYPE = {
 }
 
 const GAME_LENGTH = +(process.env.GAME_LENGTH) || 30000
+const GAME_STATUS_STARTED = 'started';
+const GAME_STATUS_WAITING = 'waiting';
+const GAME_STATUS_FINISHED = 'finished';
+
+const PERK_MARGIN = 150;
 
 function drawNewPerk() {
   const perkTypes = Object.values(PERK_TYPE);
   const randomPerkType = _.sample(perkTypes);
 
   return {
-    x: Math.floor(Math.random() * GAME_WIDTH),
-    y: Math.floor(Math.random() * GAME_HEIGHT),
+    x: Math.floor(Math.random() * (GAME_WIDTH - 2 * PERK_MARGIN) + PERK_MARGIN),
+    y: Math.floor(Math.random() * (GAME_HEIGHT - 2 * PERK_MARGIN) + PERK_MARGIN),
     type: randomPerkType
   }
 }
 
 var perk = drawNewPerk();
-var gameStatus = "waiting";
+let currentGameStatus = GAME_STATUS_WAITING;
 
 app.use(express.static(__dirname + '/public'));
 
@@ -71,22 +76,26 @@ const getTeam = () => {
   return team;
 }
 
+const getMinPlayers = () => {
+  return +process.env.MIN_PLAYERS || 2;
+}
+
 const checkGameCanBeStarted = () => {
   // return true
   const p = Object.values(players);
-  const minPlayers = +process.env.MIN_PLAYERS || 2;
-  return gameStatus !== 'started' && p.filter((p) => !p.playerReady).length === 0 && p.length >= minPlayers;
+  const minPlayers = getMinPlayers();
+  return currentGameStatus !== GAME_STATUS_STARTED && p.filter((p) => !p.playerReady).length === 0 && p.length >= minPlayers;
 }
 
 const changeGameStatus = ({ gameStatus, data }) => {
+  currentGameStatus = gameStatus;
   io.emit('gameStatusChanged', { gameStatus, data });
-
-  if (gameStatus === 'started') {
+  if (gameStatus === GAME_STATUS_STARTED) {
     createEmitTimeout('perkDrop', perk, Math.random() * 1000 + 2000)
   }
 }
 
-const stopGame = (status = "finished") => {
+const stopGame = (status = GAME_STATUS_FINISHED) => {
   endTime = null;
   clearTimeout(gameTimeout);
   timeouts.forEach((timeout) => {
@@ -99,26 +108,24 @@ const stopGame = (status = "finished") => {
 }
 
 const clearGame = () => {
-  stopGame("waiting");
-  players = {};
+  stopGame(GAME_STATUS_WAITING);
 }
 
 const tryToStartGame = () => {
   if (checkGameCanBeStarted()) {
     if (!endTime) {
       endTime = Date.now() + GAME_LENGTH
+      changeGameStatus({
+        gameStatus: GAME_STATUS_STARTED,
+        data: {
+          endTime
+        }
+      })
+      clearTimeout(gameTimeout)
+      gameTimeout = setTimeout(() => {
+        stopGame();
+      }, GAME_LENGTH)
     }
-    changeGameStatus({
-      gameStatus: 'started',
-      data: {
-        endTime
-      }
-    })
-
-    clearTimeout(gameTimeout)
-    gameTimeout = setTimeout(() => {
-      stopGame();
-    }, GAME_LENGTH)
   }
 }
 
@@ -171,9 +178,6 @@ function createEmitTimeout(eventName, data = {}, delay = 3000) {
 }
 
 io.on('connection', function (socket) {
-  if (gameStatus === 'started') {
-    return false;
-  }
   const team = getTeam();
   const initialPosition = getInitialPlayerPosition();
   const name = `${_.sample(adjectives)} ${_.sample(names)}`;
@@ -188,24 +192,25 @@ io.on('connection', function (socket) {
     team
   };
   console.log('a user connected: ', socket.id, team);
-  console.log('total: ', Object.values(players).length);
   // send the players object to the new player
   io.emit('currentPlayers', players);
   socket.emit('currentPlayers', players);
 
   // when a player moves, update the player data
   socket.on('playerReady', function (status) {
-    players[socket.id].playerReady = status;
-    console.log(players, socket.id, status)
-    const timeout = setTimeout(() => {
-      tryToStartGame();
-    }, 2000)
-    timeouts.push(timeout);
-
-    io.emit('playerReady', {
-      playerId: players[socket.id].playerId,
-      status
-    });
+    if (players[socket.id]) {
+      players[socket.id].playerReady = status;
+      io.emit('playerReady', {
+        playerId: players[socket.id].playerId,
+        status
+      });
+      if (currentGameStatus !== GAME_STATUS_STARTED) {
+        const timeout = setTimeout(() => {
+          tryToStartGame();
+        }, 2000)
+        timeouts.push(timeout);
+      }
+    }
   });
   // update all other players of the new player
   // socket.broadcast.emit('newPlayer', players[socket.id]);
@@ -217,10 +222,19 @@ io.on('connection', function (socket) {
     // emit a message to all players to remove this player
     socket.disconnect(socket.id);
     io.emit('disconnectPlayer', socket.id);
-    if (Object.values(players).length < 1) {
-      clearGame("waiting");
-    } else if (Object.values(players).length <= 1 && gameStatus !== 'waiting') {
-      stopGame("waiting");
+    if (currentGameStatus !== GAME_STATUS_WAITING) {
+      const allPlayers = Object.values(players);
+      const rdyPlayers = allPlayers.filter((p) => p.playerReady);
+      if (rdyPlayers.length < 1) {
+        clearGame();
+      } else if (rdyPlayers.length <= 1) {
+        const minPlayers = getMinPlayers();
+        if (minPlayers > 1) {
+          stopGame();
+        }
+      } else if (currentGameStatus === GAME_STATUS_FINISHED && rdyPlayers.length === allPlayers.length) {
+        tryToStartGame()
+      }
     }
   });
 
@@ -235,7 +249,7 @@ io.on('connection', function (socket) {
 
   socket.on('playersCollision', function (data) {
     io.emit('playerCollided', data);
-    createEmitTimeout('playerCanCollideAgain', data, 3000)
+    createEmitTimeout('playerCanCollideAgain', data, 2000)
   });
 
   socket.on('perkCollected', function (perkType) {
