@@ -79,7 +79,6 @@ const checkGameCanBeStarted = () => {
 }
 
 const changeGameStatus = ({ gameStatus, data }) => {
-  console.log(gameStatus)
   io.emit('gameStatusChanged', { gameStatus, data });
 
   if (gameStatus === 'started') {
@@ -100,7 +99,7 @@ const stopGame = (status = "finished") => {
 }
 
 const clearGame = () => {
-  stopGame();
+  stopGame("waiting");
   players = {};
 }
 
@@ -218,12 +217,10 @@ io.on('connection', function (socket) {
     // emit a message to all players to remove this player
     socket.disconnect(socket.id);
     io.emit('disconnectPlayer', socket.id);
-    tryToStartGame();
-    if (Object.values(players).length <= 1 && gameStatus !== 'waiting') {
-      stopGame("waiting");
-    }
     if (Object.values(players).length < 1) {
       clearGame("waiting");
+    } else if (Object.values(players).length <= 1 && gameStatus !== 'waiting') {
+      stopGame("waiting");
     }
   });
 
