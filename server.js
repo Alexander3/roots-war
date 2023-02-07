@@ -87,14 +87,14 @@ const changeGameStatus = ({ gameStatus, data }) => {
   }
 }
 
-const stopGame = () => {
+const stopGame = (status = "finished") => {
   endTime = null;
   clearTimeout(gameTimeout);
-  Object.keys(players).forEach((p) => {
-    players[p].playerReady = false;
-  })
+  timeouts.forEach((timeout) => {
+    clearTimeout(timeout)
+  });
   changeGameStatus({
-    gameStatus: 'finished'
+    gameStatus: status
   })
   io.emit('currentPlayers', players);
 }
@@ -197,6 +197,7 @@ io.on('connection', function (socket) {
   // when a player moves, update the player data
   socket.on('playerReady', function (status) {
     players[socket.id].playerReady = status;
+    console.log(players, socket.id, status)
     const timeout = setTimeout(() => {
       tryToStartGame();
     }, 2000)
@@ -219,10 +220,10 @@ io.on('connection', function (socket) {
     io.emit('disconnectPlayer', socket.id);
     tryToStartGame();
     if (Object.values(players).length <= 1 && gameStatus !== 'waiting') {
-      stopGame();
+      stopGame("waiting");
     }
     if (Object.values(players).length < 1) {
-      clearGame();
+      clearGame("waiting");
     }
   });
 

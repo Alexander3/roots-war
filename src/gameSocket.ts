@@ -22,10 +22,13 @@ function isGameRunning(self: Game) {
     return self.gameStatus === GameStatus.Start && self.scene.key === GameSceneKeys.Game;
 }
 
-function displayAmountOfReadyPlayers(self: Game) {
+function displayReadyPlayers(self: Game) {
     if (!isGameRunning(self)) {
-        const amountOfReadyPlayers = self.allPlayers().filter(player => player.playerReady).length ?? 0;
-        self.onPlayersCountUpdate(amountOfReadyPlayers, self.allPlayers().length);
+        const all = Object.keys(gamePlayers).map(function (key, index) {
+            return gamePlayers[key].playerReady
+        });
+        const amountOfReadyPlayers = all.filter(player => player).length ?? 0;
+        self.onSomePlayerReady(amountOfReadyPlayers, all.length);
     }
 }
 
@@ -42,7 +45,7 @@ export function initPlayers(self: Game) {
         }
     });
 
-    displayAmountOfReadyPlayers(self);
+    displayReadyPlayers(self);
 }
 
 export function createForServer(self: Game) {
@@ -68,7 +71,7 @@ export function createForServer(self: Game) {
             if (gamePlayers[playerId]) {
                 delete gamePlayers[playerId];
             }
-            displayAmountOfReadyPlayers(self);
+            displayReadyPlayers(self);
         });
 
         // ADDING EXISTING PLAYERS WHEN JOINING AS NEW PLAYER
@@ -89,12 +92,7 @@ export function createForServer(self: Game) {
             if (gamePlayers[playerId]) {
                 gamePlayers[playerId].playerReady = status;
             }
-            const all = Object.keys(gamePlayers).map(function (key, index) {
-                return gamePlayers[key].playerReady
-            });
-            const amountOfReadyPlayers = all.filter(player => player).length ?? 0;
-            // debugger;
-            self.onSomePlayerReady(amountOfReadyPlayers, all.length);
+            displayReadyPlayers(self)
         });
 
         // // ADDING NEW PLAYER WHEN ALREADY PLAYING AS ONE
@@ -112,7 +110,7 @@ export function createForServer(self: Game) {
                     otherPlayer.destroy();
                 });
             }
-            displayAmountOfReadyPlayers(self);
+            displayReadyPlayers(self);
         });
 
         // RECEIVING INFO ABOUT MOVEMENT OF OTHER PLAYERS
